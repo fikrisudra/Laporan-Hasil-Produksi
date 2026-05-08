@@ -3,166 +3,204 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Laporan Produksi Pro</title>
+    <title>Laporan Produksi Terpadu</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
-        body { font-family: 'Inter', sans-serif; background-color: #f1f5f9; }
-        .glass-modal { backdrop-filter: blur(12px); background: rgba(255,255,255,1); }
-        .label-custom { display: block; text-transform: uppercase; font-size: 10px; font-weight: 700; color: #64748b; margin-bottom: 4px; }
-        input, select { border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px; outline: none; transition: all 0.2s; }
-        input:focus { border-color: #3b82f6; ring: 2px; ring-color: #dbeafe; }
-        .fab { position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 40; }
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; }
+        
+        /* Input Styling */
+        .input-proper {
+            @apply w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm transition-all outline-none shadow-sm;
+        }
+        .input-proper:focus {
+            @apply border-blue-500 ring-4 ring-blue-50;
+        }
+        .label-proper {
+            @apply block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5 ml-1;
+        }
+        
+        /* Table Header Proper */
+        .th-proper {
+            @apply px-4 py-4 bg-slate-50 text-left text-[10px] font-bold text-slate-600 uppercase tracking-widest border-b border-slate-100;
+        }
+        
+        .glass-header {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        /* Satuan Badge */
+        .unit-tag {
+            @apply text-[9px] font-bold bg-slate-100 text-slate-500 px-1.5 py-0.5 rounded ml-1;
+        }
     </style>
 </head>
-<body class="antialiased text-gray-900 pb-24">
+<body class="antialiased text-slate-900 pb-24">
 
-    <header class="bg-white border-b sticky top-0 z-30 shadow-sm">
+    <header class="glass-header border-b sticky top-0 z-30 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 py-4">
-            <div class="flex justify-between items-center mb-4">
-                <h1 class="text-xl font-bold text-gray-800 flex items-center gap-2">
-                    <i data-lucide="factory" class="text-blue-600"></i> Laporan Produksi
-                </h1>
-                <button onclick="sendToBackend()" id="btnKirim" class="flex items-center gap-2 px-6 py-2.5 bg-green-600 text-white rounded-xl hover:bg-green-700 shadow-md transition-all font-bold">
-                    <i data-lucide="cloud-upload" class="w-5 h-5"></i> Kirim
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                <div>
+                    <h1 class="text-xl font-bold flex items-center gap-2">
+                        <div class="p-2 bg-blue-600 rounded-lg text-white">
+                            <i data-lucide="bar-chart-3" class="w-5 h-5"></i>
+                        </div>
+                        Laporan Hasil Produksi
+                    </h1>
+                </div>
+                <button onclick="sendToBackend()" id="btnKirim" class="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 shadow-lg shadow-blue-200 transition-all font-bold active:scale-95">
+                    <i data-lucide="send" class="w-4 h-4"></i> Kirim Data
                 </button>
             </div>
             
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-3 bg-blue-50 p-3 rounded-xl border border-blue-100">
-                <div>
-                    <label class="label-custom">Tanggal</label>
-                    <input type="date" id="globalTanggal" class="w-full bg-white">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+                <div class="col-span-2 md:col-span-1">
+                    <label class="label-proper">Tanggal Produksi</label>
+                    <input type="date" id="globalTanggal" class="input-proper">
                 </div>
                 <div>
-                    <label class="label-custom">Shift</label>
-                    <select id="globalShift" class="w-full bg-white">
+                    <label class="label-proper">Shift</label>
+                    <select id="globalShift" class="input-proper appearance-none bg-no-repeat bg-right pr-10">
                         <option value="1">Shift 1</option>
                         <option value="2">Shift 2</option>
                         <option value="3">Shift 3</option>
                     </select>
                 </div>
                 <div>
-                    <label class="label-custom">Jam Kerja Awal</label>
-                    <input type="time" id="globalJamAwal" class="w-full bg-white">
+                    <label class="label-proper">Jam Kerja Awal</label>
+                    <input type="time" id="globalJamAwal" class="input-proper">
                 </div>
                 <div>
-                    <label class="label-custom">Jam Kerja Akhir</label>
-                    <input type="time" id="globalJamAkhir" class="w-full bg-white">
+                    <label class="label-proper">Jam Kerja Akhir</label>
+                    <input type="time" id="globalJamAkhir" class="input-proper">
                 </div>
             </div>
         </div>
     </header>
 
-    <main class="max-w-7xl mx-auto p-4">
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+    <main class="max-w-7xl mx-auto p-4 mt-4">
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
             <div class="overflow-x-auto">
-                <table class="min-w-[1500px] w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
-                        <tr class="text-[10px] font-bold text-gray-500 uppercase tracking-wider">
-                            <th class="px-4 py-3 text-left">Produk / Versi</th>
-                            <th class="px-4 py-3 text-left">Line / Kavling</th>
-                            <th class="px-4 py-3 text-center">Operasional</th>
-                            <th class="px-4 py-3 text-center">Batch</th>
-                            <th class="px-4 py-3 text-center">Karung</th>
-                            <th class="px-4 py-3 text-center">Robek</th>
-                            <th class="px-4 py-3 text-center">Tap</th>
-                            <th class="px-4 py-3 text-center">Sweeping</th>
-                            <th class="px-4 py-3 text-left">No. Label</th>
-                            <th class="px-4 py-3 text-center">Aksi</th>
+                <table class="min-w-[1600px] w-full divide-y divide-slate-200">
+                    <thead>
+                        <tr>
+                            <th class="th-proper">Detail Produk</th>
+                            <th class="th-proper">Line / Kavling</th>
+                            <th class="th-proper text-center">Operasional</th>
+                            <th class="th-proper text-center">Batch</th>
+                            <th class="th-proper text-center">Karung</th>
+                            <th class="th-proper text-center">Robek</th>
+                            <th class="th-proper text-center">Tap <span class="unit-tag">Kg</span></th>
+                            <th class="th-proper text-center">Sweeping <span class="unit-tag">Kg</span></th>
+                            <th class="th-proper text-left">Rentang Label</th>
+                            <th class="th-proper text-center">Aksi</th>
                         </tr>
                     </thead>
-                    <tbody id="localTableBody" class="divide-y divide-gray-100 bg-white text-sm">
+                    <tbody id="localTableBody" class="divide-y divide-slate-50 text-sm">
                         </tbody>
                 </table>
             </div>
-            <div id="emptyState" class="hidden text-center py-20 text-gray-400">
-                <i data-lucide="layers" class="w-12 h-12 mx-auto mb-2 opacity-20"></i>
-                <p>Belum ada rincian data produk.</p>
+            <div id="emptyState" class="hidden text-center py-24">
+                <div class="bg-slate-50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i data-lucide="package-plus" class="w-10 h-10 text-slate-300"></i>
+                </div>
+                <h3 class="text-slate-900 font-bold">Belum Ada Baris Data</h3>
+                <p class="text-slate-500 text-sm mt-1">Tekan tombol tambah di bawah untuk mulai menginput.</p>
             </div>
         </div>
     </main>
 
-    <button onclick="openModal()" class="fab flex items-center gap-2 px-6 py-4 bg-blue-600 text-white rounded-full shadow-2xl hover:bg-blue-700 transition-all active:scale-90 font-bold">
-        <i data-lucide="plus" class="w-6 h-6"></i>
+    <button onclick="openModal()" class="fixed bottom-8 right-8 flex items-center gap-3 px-7 py-4 bg-slate-900 text-white rounded-2xl shadow-2xl hover:bg-slate-800 transition-all active:scale-95 z-40 font-bold">
+        <i data-lucide="plus-circle" class="w-6 h-6 text-blue-400"></i>
         <span>Tambah Produk</span>
     </button>
 
     <div id="modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
         <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onclick="closeModal()"></div>
-        <div class="glass-modal w-full max-w-2xl rounded-2xl shadow-2xl z-50 p-6 overflow-y-auto max-h-[90vh]">
-            <div class="flex justify-between items-center mb-6">
-                <h2 id="modalTitle" class="text-xl font-bold text-gray-800">Tambah Produk</h2>
-                <button onclick="closeModal()" class="p-2 hover:bg-gray-100 rounded-full"><i data-lucide="x" class="w-5 h-5"></i></button>
+        <div class="bg-white w-full max-w-2xl rounded-3xl shadow-2xl z-50 p-7 overflow-y-auto max-h-[90vh]">
+            <div class="flex justify-between items-center mb-8 border-b border-slate-100 pb-4">
+                <h2 id="modalTitle" class="text-xl font-bold text-slate-800">Input Data Produk</h2>
+                <button onclick="closeModal()" class="p-2 hover:bg-slate-100 rounded-full transition-colors"><i data-lucide="x" class="w-5 h-5"></i></button>
             </div>
 
-            <form id="prodForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <form id="prodForm" class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <input type="hidden" id="editId">
                 
                 <div class="md:col-span-2 grid grid-cols-2 gap-4">
                     <div>
-                        <label class="label-custom">Nama Produk</label>
-                        <input type="text" id="namaProduk" required class="w-full">
+                        <label class="label-proper">Nama Produk</label>
+                        <input type="text" id="namaProduk" required class="input-proper" placeholder="Contoh: Pupuk NPK">
                     </div>
                     <div>
-                        <label class="label-custom">Versi</label>
-                        <input type="text" id="versi" required class="w-full">
+                        <label class="label-custom label-proper">Versi</label>
+                        <input type="text" id="versi" required class="input-proper" placeholder="v1.x">
                     </div>
-                </div>
-
-                <div>
-                    <label class="label-custom">Line Bagging</label>
-                    <input type="text" id="lineBagging" required class="w-full">
-                </div>
-                <div>
-                    <label class="label-custom">Kavling Tujuan</label>
-                    <input type="text" id="kavlingTujuan" required class="w-full">
                 </div>
 
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="label-custom">Jam Awal</label>
-                        <input type="time" id="jamAwal" required class="w-full">
+                        <label class="label-proper">Line Bagging</label>
+                        <input type="text" id="lineBagging" required class="input-proper">
                     </div>
                     <div>
-                        <label class="label-custom">Jam Akhir</label>
-                        <input type="time" id="jamAkhir" required class="w-full">
+                        <label class="label-proper">Kavling Tujuan</label>
+                        <input type="text" id="kavlingTujuan" required class="input-proper">
                     </div>
-                </div>
-                <div>
-                    <label class="label-custom">Nomor Label</label>
-                    <input type="text" id="noLabel" required class="w-full">
                 </div>
 
-                <div class="grid grid-cols-2 gap-4 md:col-span-2">
+                <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="label-custom">Jml Batch</label>
-                        <input type="number" id="jmlBatch" required class="w-full">
+                        <label class="label-proper">Jam Awal</label>
+                        <input type="time" id="jamAwal" required class="input-proper">
                     </div>
                     <div>
-                        <label class="label-custom">Jml Karung</label>
-                        <input type="number" id="jmlKarung" required class="w-full">
+                        <label class="label-proper">Jam Akhir</label>
+                        <input type="time" id="jamAkhir" required class="input-proper">
+                    </div>
+                </div>
+
+                <div class="md:col-span-2 grid grid-cols-2 gap-4 bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                    <div>
+                        <label class="label-proper text-blue-600">Nomor Label (Dari)</label>
+                        <input type="text" id="labelDari" required class="input-proper" placeholder="A-001">
+                    </div>
+                    <div>
+                        <label class="label-proper text-blue-600">Nomor Label (Sampai)</label>
+                        <input type="text" id="labelSampai" required class="input-proper" placeholder="A-100">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="label-proper">Jumlah Batch</label>
+                        <input type="number" id="jmlBatch" required class="input-proper">
+                    </div>
+                    <div>
+                        <label class="label-proper">Jumlah Karung</label>
+                        <input type="number" id="jmlKarung" required class="input-proper">
                     </div>
                 </div>
 
                 <div class="grid grid-cols-3 gap-3 md:col-span-2">
                     <div>
-                        <label class="label-custom">Karung Robek</label>
-                        <input type="number" id="jmlRobek" required class="w-full">
+                        <label class="label-proper">Karung Robek</label>
+                        <input type="number" id="jmlRobek" required class="input-proper">
                     </div>
                     <div>
-                        <label class="label-custom">Jml Tap</label>
-                        <input type="number" id="jmlTap" required class="w-full">
+                        <label class="label-proper">Tap <span class="text-[9px] text-slate-400">(Kg)</span></label>
+                        <input type="number" step="0.01" id="jmlTap" required class="input-proper">
                     </div>
                     <div>
-                        <label class="label-custom">Jml Sweeping</label>
-                        <input type="number" id="jmlSweeping" required class="w-full">
+                        <label class="label-proper">Sweeping <span class="text-[9px] text-slate-400">(Kg)</span></label>
+                        <input type="number" step="0.01" id="jmlSweeping" required class="input-proper">
                     </div>
                 </div>
 
-                <div class="md:col-span-2 pt-4">
-                    <button type="submit" class="w-full bg-blue-600 text-white py-4 rounded-xl font-bold shadow-lg hover:bg-blue-700 transition-all flex items-center justify-center gap-2">
-                        <i data-lucide="save" class="w-5 h-5"></i> <span id="btnSaveLabel">Simpan ke Tabel</span>
+                <div class="md:col-span-2 pt-6">
+                    <button type="submit" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-bold shadow-xl hover:bg-black transition-all flex items-center justify-center gap-2 active:scale-95">
+                        <i data-lucide="plus-circle" class="w-5 h-5"></i> <span id="btnSaveLabel">Masukkan ke Tabel</span>
                     </button>
                 </div>
             </form>
@@ -172,13 +210,10 @@
     <script>
         lucide.createIcons();
         const scriptURL = 'URL_APPS_SCRIPT_ANDA';
-        let localData = JSON.parse(localStorage.getItem('prod_v3')) || [];
+        let localData = JSON.parse(localStorage.getItem('prod_v4')) || [];
 
         function openModal(editId = null) {
-            const modal = document.getElementById('modal');
-            const form = document.getElementById('prodForm');
-            modal.classList.remove('hidden');
-            
+            document.getElementById('modal').classList.remove('hidden');
             if(editId) {
                 const item = localData.find(i => i.id === editId);
                 document.getElementById('editId').value = item.id;
@@ -188,31 +223,28 @@
                 document.getElementById('kavlingTujuan').value = item.kavlingTujuan;
                 document.getElementById('jamAwal').value = item.jamAwal;
                 document.getElementById('jamAkhir').value = item.jamAkhir;
-                document.getElementById('noLabel').value = item.noLabel;
+                document.getElementById('labelDari').value = item.labelDari;
+                document.getElementById('labelSampai').value = item.labelSampai;
                 document.getElementById('jmlBatch').value = item.jmlBatch;
                 document.getElementById('jmlKarung').value = item.jmlKarung;
                 document.getElementById('jmlRobek').value = item.jmlRobek;
                 document.getElementById('jmlTap').value = item.jmlTap;
                 document.getElementById('jmlSweeping').value = item.jmlSweeping;
-                
                 document.getElementById('modalTitle').innerText = "Edit Data Produk";
-                document.getElementById('btnSaveLabel').innerText = "Update Data";
+                document.getElementById('btnSaveLabel').innerText = "Perbarui Baris";
             } else {
-                form.reset();
+                document.getElementById('prodForm').reset();
                 document.getElementById('editId').value = "";
-                document.getElementById('modalTitle').innerText = "Tambah Produk";
-                document.getElementById('btnSaveLabel').innerText = "Simpan ke Tabel";
+                document.getElementById('modalTitle').innerText = "Tambah Produk Baru";
+                document.getElementById('btnSaveLabel').innerText = "Masukkan ke Tabel";
             }
         }
 
-        function closeModal() {
-            document.getElementById('modal').classList.add('hidden');
-        }
+        function closeModal() { document.getElementById('modal').classList.add('hidden'); }
 
         document.getElementById('prodForm').addEventListener('submit', function(e) {
             e.preventDefault();
             const editId = document.getElementById('editId').value;
-            
             const itemData = {
                 id: editId ? parseInt(editId) : Date.now(),
                 namaProduk: document.getElementById('namaProduk').value,
@@ -221,7 +253,8 @@
                 kavlingTujuan: document.getElementById('kavlingTujuan').value,
                 jamAwal: document.getElementById('jamAwal').value,
                 jamAkhir: document.getElementById('jamAkhir').value,
-                noLabel: document.getElementById('noLabel').value,
+                labelDari: document.getElementById('labelDari').value,
+                labelSampai: document.getElementById('labelSampai').value,
                 jmlBatch: document.getElementById('jmlBatch').value,
                 jmlKarung: document.getElementById('jmlKarung').value,
                 jmlRobek: document.getElementById('jmlRobek').value,
@@ -229,13 +262,10 @@
                 jmlSweeping: document.getElementById('jmlSweeping').value
             };
 
-            if(editId) {
-                localData = localData.map(i => i.id === parseInt(editId) ? itemData : i);
-            } else {
-                localData.push(itemData);
-            }
+            if(editId) { localData = localData.map(i => i.id === parseInt(editId) ? itemData : i); }
+            else { localData.push(itemData); }
 
-            localStorage.setItem('prod_v3', JSON.stringify(localData));
+            localStorage.setItem('prod_v4', JSON.stringify(localData));
             closeModal();
             render();
         });
@@ -250,20 +280,29 @@
 
             localData.forEach(item => {
                 const row = `
-                    <tr class="hover:bg-slate-50 transition-colors">
-                        <td class="px-4 py-4"><span class="font-bold text-gray-800">${item.namaProduk}</span><br><span class="text-xs text-gray-400">${item.versi}</span></td>
-                        <td class="px-4 py-4 text-gray-600">${item.lineBagging}<br><span class="text-xs text-blue-500 font-bold">${item.kavlingTujuan}</span></td>
-                        <td class="px-4 py-4 text-center font-mono text-xs">${item.jamAwal}-${item.jamAkhir}</td>
-                        <td class="px-4 py-4 text-center">${item.jmlBatch}</td>
-                        <td class="px-4 py-4 text-center font-bold text-blue-600">${item.jmlKarung}</td>
-                        <td class="px-4 py-4 text-center text-red-500">${item.jmlRobek}</td>
-                        <td class="px-4 py-4 text-center">${item.jmlTap}</td>
-                        <td class="px-4 py-4 text-center">${item.jmlSweeping}</td>
-                        <td class="px-4 py-4 text-xs font-medium text-gray-500">${item.noLabel}</td>
-                        <td class="px-4 py-4 text-right">
-                            <div class="flex gap-2 justify-end">
-                                <button onclick="openModal(${item.id})" class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg"><i data-lucide="edit-3" class="w-4 h-4"></i></button>
-                                <button onclick="removeItem(${item.id})" class="p-2 text-red-400 hover:bg-red-50 rounded-lg"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                    <tr class="hover:bg-slate-50 transition-colors group">
+                        <td class="px-4 py-4">
+                            <span class="font-bold text-slate-800">${item.namaProduk}</span>
+                            <div class="text-[10px] text-slate-400 font-bold uppercase tracking-tighter mt-0.5">${item.versi}</div>
+                        </td>
+                        <td class="px-4 py-4">
+                            <div class="text-xs font-semibold text-slate-600">${item.lineBagging}</div>
+                            <div class="text-[10px] text-blue-600 font-bold uppercase">${item.kavlingTujuan}</div>
+                        </td>
+                        <td class="px-4 py-4 text-center font-mono text-[11px] text-slate-500 bg-slate-50/50">${item.jamAwal} - ${item.jamAkhir}</td>
+                        <td class="px-4 py-4 text-center font-semibold text-slate-700">${item.jmlBatch}</td>
+                        <td class="px-4 py-4 text-center font-bold text-blue-700">${item.jmlKarung}</td>
+                        <td class="px-4 py-4 text-center font-semibold text-red-500 bg-red-50/30">${item.jmlRobek}</td>
+                        <td class="px-4 py-4 text-center font-semibold text-slate-600">${item.jmlTap}</td>
+                        <td class="px-4 py-4 text-center font-semibold text-slate-600">${item.jmlSweeping}</td>
+                        <td class="px-4 py-4">
+                            <div class="text-[10px] font-bold text-slate-400 uppercase">Dari: <span class="text-slate-700">${item.labelDari}</span></div>
+                            <div class="text-[10px] font-bold text-slate-400 uppercase">Hingga: <span class="text-slate-700">${item.labelSampai}</span></div>
+                        </td>
+                        <td class="px-4 py-4 text-center">
+                            <div class="flex gap-1 justify-center">
+                                <button onclick="openModal(${item.id})" class="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all"><i data-lucide="edit-2" class="w-4 h-4"></i></button>
+                                <button onclick="removeItem(${item.id})" class="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
                             </div>
                         </td>
                     </tr>
@@ -274,9 +313,9 @@
         }
 
         function removeItem(id) {
-            if(confirm("Hapus baris ini?")) {
+            if(confirm("Hapus baris data ini?")) {
                 localData = localData.filter(i => i.id !== id);
-                localStorage.setItem('prod_v3', JSON.stringify(localData));
+                localStorage.setItem('prod_v4', JSON.stringify(localData));
                 render();
             }
         }
@@ -286,31 +325,31 @@
             const shift = document.getElementById('globalShift').value;
             const jamKerja = `${document.getElementById('globalJamAwal').value}-${document.getElementById('globalJamAkhir').value}`;
 
-            if(!tanggal || !shift) return alert("Mohon isi Tanggal dan Shift di bagian atas!");
-            if(localData.length === 0) return alert("Belum ada data produk di tabel.");
+            if(!tanggal || !shift) return alert("Isi Tanggal dan Shift terlebih dahulu!");
+            if(localData.length === 0) return alert("Belum ada data di tabel!");
 
             const btn = document.getElementById('btnKirim');
             btn.disabled = true;
-            btn.innerText = "Proses...";
+            btn.innerHTML = `<i data-lucide="refresh-cw" class="w-4 h-4 animate-spin"></i> Memproses...`;
+            lucide.createIcons();
 
             try {
                 for (const item of localData) {
                     const finalData = { ...item, tanggal, shift, jamKerja };
                     await fetch(scriptURL, { method: 'POST', body: JSON.stringify(finalData) });
                 }
-                alert("Data Berhasil Sinkron!");
+                alert(" Sinkronisasi Cloud Berhasil!");
                 localData = [];
-                localStorage.removeItem('prod_v3');
+                localStorage.removeItem('prod_v4');
                 render();
             } catch (e) {
-                alert("Gagal Kirim.");
+                alert("Koneksi gagal atau database sibuk.");
             } finally {
                 btn.disabled = false;
-                btn.innerHTML = `<i data-lucide="cloud-upload" class="w-5 h-5"></i> Kirim`;
+                btn.innerHTML = `<i data-lucide="send" class="w-4 h-4"></i> Kirim Data`;
                 lucide.createIcons();
             }
         }
-
         window.onload = render;
     </script>
 </body>

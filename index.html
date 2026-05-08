@@ -26,8 +26,8 @@
 
         .table-container { width: 100%; border-radius: 20px; border: 1px solid #f1f5f9; overflow: hidden; }
         table { width: 100%; border-collapse: collapse; font-size: 10.5px; table-layout: fixed; }
-        th { background: #f8fafc; padding: 12px 8px; font-weight: 800; color: #64748b; border-bottom: 1px solid #f1f5f9; text-align: left; }
-        td { padding: 16px 8px; border-bottom: 1px solid #f1f5f9; font-weight: 600; color: #475569; transition: 0.2s; user-select: none; word-wrap: break-word; cursor: pointer; }
+        th { background: #f8fafc; padding: 12px 10px; font-weight: 800; color: #64748b; border-bottom: 1px solid #f1f5f9; text-align: left; }
+        td { padding: 16px 10px; border-bottom: 1px solid #f1f5f9; font-weight: 600; color: #475569; transition: 0.2s; user-select: none; word-wrap: break-word; cursor: pointer; }
         tr:active td { background-color: #f1f5f9 !important; }
 
         .action-menu-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; z-index: 4000; padding: 20px; }
@@ -49,14 +49,13 @@
         .modal-sheet { background: white; width: 100%; border-radius: 35px 35px 0 0; padding: 30px 25px; max-height: 92vh; overflow-y: auto; transform: translateY(100%); transition: 0.3s; }
         .modal-open .modal-sheet { transform: translateY(0); }
         
-        .full-table-overlay { position: fixed; inset: 0; background: white; z-index: 900; display: none; flex-direction: column; padding: 20px; }
+        .full-table-overlay { position: fixed; inset: 0; background: white; z-index: 2000; display: none; flex-direction: column; padding: 20px; }
     </style>
 </head>
 <body>
 
     <div id="toast"><i data-lucide="check" size="18"></i> <span id="toastMsg">Berhasil</span></div>
 
-    <!-- Opsi Menu (Long Press) -->
     <div id="actionMenuOverlay" class="action-menu-overlay" onclick="closeActionMenu()">
         <div class="action-menu" onclick="event.stopPropagation()">
             <div style="padding: 12px 16px; font-size: 10px; font-weight: 800; color: #94a3b8; text-transform: uppercase;">Opsi Produk</div>
@@ -65,7 +64,6 @@
         </div>
     </div>
 
-    <!-- Dialog Konfirmasi Hapus -->
     <div id="deleteDialog" class="dialog-overlay">
         <div class="dialog-box">
             <h3 style="font-weight:800; margin-bottom:12px">Hapus Produk?</h3>
@@ -82,11 +80,10 @@
     </nav>
 
     <div class="container">
-        <!-- Input Tanggal & Shift -->
         <div class="card">
             <span class="section-title">Tanggal dan Jam</span>
             <div style="margin-bottom:12px"><input type="date" id="globalTanggal" class="field"></div>
-            <div class="grid-2">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
                 <select id="globalShift" class="field" onchange="autoFillShiftTime()">
                     <option value="" disabled selected>Pilih Shift</option>
                     <option value="1">Shift 1</option><option value="2">Shift 2</option><option value="3">Shift 3</option>
@@ -97,7 +94,6 @@
             </div>
         </div>
 
-        <!-- Tabel Utama -->
         <div class="card" style="padding:15px;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px">
                 <span class="section-title" style="margin-bottom:0">Daftar Produk</span>
@@ -107,10 +103,9 @@
                 <table>
                     <thead>
                         <tr>
-                            <th style="width: 25%;">Produk</th>
+                            <th style="width: 40%;">Produk / Jam</th>
                             <th style="width: 15%;">Versi</th>
-                            <th style="width: 20%;">Jam Ops</th>
-                            <th style="width: 20%;">Karung</th>
+                            <th style="width: 25%;">Karung</th>
                             <th style="width: 20%;">Line</th>
                         </tr>
                     </thead>
@@ -121,12 +116,10 @@
         </div>
     </div>
 
-    <!-- Tombol FAB -->
     <div class="fab-container">
         <button class="btn-fab" onclick="openModal()"><i data-lucide="plus" size="32"></i></button>
     </div>
 
-    <!-- Modal Input -->
     <div class="modal-overlay" id="modalOverlay">
         <div class="modal-sheet" id="modalSheet">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:25px">
@@ -170,8 +163,7 @@
         </div>
     </div>
 
-    <!-- Overlay Detail Produk (Full Table) -->
-    <div id="fullTableOverlay" class="full-table-overlay" style="display: none; position: fixed; inset: 0; background: white; z-index: 2000; padding: 20px; flex-direction: column;">
+    <div id="fullTableOverlay" class="full-table-overlay">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:25px">
             <h2 style="font-weight:800">Detail Produk</h2>
             <button onclick="toggleFullTable(false)" style="border:none; background:#f1f5f9; padding:12px; border-radius:15px"><i data-lucide="x" size="22"></i></button>
@@ -195,25 +187,17 @@
         let pressTimer = null;
         let isLongPress = false;
 
-        // Logic Gestur Baru
         function setupGestures() {
-            const rows = document.querySelectorAll('tbody tr');
+            const rows = document.querySelectorAll('#tableBody tr');
             rows.forEach(row => {
-                const id = row.id.replace('r-', '').replace('rf-', '');
-                
-                // Touch/Mouse Events
+                const id = row.id.replace('r-', '');
                 row.onmousedown = (e) => startPress(e, id);
                 row.onmouseup = (e) => endPress(e, id);
                 row.ontouchstart = (e) => startPress(e, id);
                 row.ontouchend = (e) => endPress(e, id);
-                
-                // Mencegah klik biasa jika long press terdeteksi
                 row.onclick = (e) => {
-                    if (isLongPress) {
-                        e.preventDefault();
-                        return;
-                    }
-                    viewProductDetail(id);
+                    if (isLongPress) return;
+                    toggleFullTable(true);
                 };
             });
         }
@@ -225,17 +209,10 @@
                 isLongPress = true;
                 selectedId = parseInt(id);
                 openActionMenu();
-            }, 600); // 0.6 detik untuk tahan
+            }, 600);
         }
 
-        function endPress(e, id) {
-            clearTimeout(pressTimer);
-        }
-
-        function viewProductDetail(id) {
-            // Animasi scroll ke baris di tabel full screen atau sekadar buka full screen
-            toggleFullTable(true);
-        }
+        function endPress() { clearTimeout(pressTimer); }
 
         function openActionMenu() {
             const menu = document.getElementById('actionMenuOverlay');
@@ -314,7 +291,6 @@
             localData = localData.filter(x => x.id !== selectedId);
             localStorage.setItem('prod_v31', JSON.stringify(localData));
             render();
-            if(document.getElementById('fullTableOverlay').style.display === 'flex') renderFull();
             closeDeleteDialog();
             showToast("Produk dihapus");
         };
@@ -328,10 +304,14 @@
                 versi: document.getElementById('versi').value,
                 lineBagging: document.getElementById('lineBagging').value,
                 kavling: document.getElementById('kavling').value,
-                jamAwal: document.getElementById('jamAwal').value, jamAkhir: document.getElementById('jamAkhir').value,
-                labelDari: document.getElementById('labelDari').value, labelSampai: document.getElementById('labelSampai').value,
-                jmlBatch: document.getElementById('jmlBatch').value, jmlKarung: document.getElementById('jmlKarung').value,
-                jmlTap: document.getElementById('jmlTap').value || 0, jmlSweeping: document.getElementById('jmlSweeping').value || 0,
+                jamAwal: document.getElementById('jamAwal').value, 
+                jamAkhir: document.getElementById('jamAkhir').value,
+                labelDari: document.getElementById('labelDari').value, 
+                labelSampai: document.getElementById('labelSampai').value,
+                jmlBatch: document.getElementById('jmlBatch').value, 
+                jmlKarung: document.getElementById('jmlKarung').value,
+                jmlTap: document.getElementById('jmlTap').value || 0, 
+                jmlSweeping: document.getElementById('jmlSweeping').value || 0,
                 jmlRobek: document.getElementById('jmlRobek').value || 0
             };
             if(eid) localData = localData.map(x => x.id === parseInt(eid) ? obj : x);
@@ -343,9 +323,11 @@
         function render() {
             const tb = document.getElementById('tableBody');
             tb.innerHTML = localData.map(i => `<tr id="r-${i.id}">
-                <td style="font-weight:800; color:#0f172a">${i.namaProduk}</td>
+                <td>
+                    <div style="font-weight:800; color:#0f172a">${i.namaProduk}</div>
+                    <div style="font-size:9px; opacity:0.5; margin-top:2px">${i.jamAwal} — ${i.jamAkhir}</div>
+                </td>
                 <td>${i.versi}</td>
-                <td>${i.jamAwal}-${i.jamAkhir}</td>
                 <td style="color:#2563eb; font-weight:800">${i.jmlKarung}</td>
                 <td>${i.lineBagging}</td>
             </tr>`).join('');
@@ -355,16 +337,9 @@
 
         function renderFull() {
             const fb = document.getElementById('fullTableBody');
-            fb.innerHTML = localData.map(i => `<tr id="rf-${i.id}">
+            fb.innerHTML = localData.map(i => `<tr>
                 <td>${i.jamAwal}-${i.jamAkhir}</td><td>${i.namaProduk}</td><td>${i.versi}</td><td>${i.lineBagging}</td><td>${i.kavling}</td>
                 <td>${i.labelDari}-${i.labelSampai}</td><td>${i.jmlKarung}</td><td>${i.jmlTap}</td><td>${i.jmlSweeping}</td><td>${i.jmlRobek}</td></tr>`).join('');
-            setupGestures();
-        }
-
-        function sendToGoogleSheet() {
-            if(localData.length === 0) return alert("Data kosong");
-            showToast("Mengirim data...");
-            setTimeout(() => showToast("Data terkirim"), 1500);
         }
 
         window.onload = render;

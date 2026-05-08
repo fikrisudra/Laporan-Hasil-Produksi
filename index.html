@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Laporan Hasil Produksi v32</title>
+    <title>Laporan Hasil Produksi v33</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
@@ -96,7 +96,7 @@
             </div>
         </div>
 
-        <!-- Tabel List -->
+        <!-- Tabel List Utama -->
         <div class="card" style="padding:15px;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px">
                 <span class="section-title" style="margin-bottom:0">Daftar Produk</span>
@@ -184,6 +184,7 @@
                 <tfoot id="fullTableFoot"></tfoot>
             </table>
         </div>
+        <div style="text-align:center; padding:10px; opacity:0.3; font-size:8px; font-weight:800">TAHAN BARIS UNTUK OPSI EDIT/HAPUS</div>
     </div>
 
     <script>
@@ -193,15 +194,20 @@
         let pressTimer = null;
         let isLongPress = false;
 
-        function setupGestures() {
-            const rows = document.querySelectorAll('#tableBody tr');
+        // Fungsi Delegasi untuk Gesture (bisa dipakai di tabel manapun)
+        function setupGestures(selector) {
+            const rows = document.querySelectorAll(selector);
             rows.forEach(row => {
-                const id = row.id.replace('r-', '');
+                const id = row.getAttribute('data-id');
                 row.onmousedown = (e) => startPress(e, id);
                 row.onmouseup = () => endPress();
                 row.ontouchstart = (e) => startPress(e, id);
                 row.ontouchend = () => endPress();
-                row.onclick = () => { if (!isLongPress) openModal(parseInt(id), true); };
+                
+                // Klik biasa di tabel utama buka detail view-only
+                if(selector === '#tableBody tr') {
+                    row.onclick = () => { if (!isLongPress) openModal(parseInt(id), true); };
+                }
             });
         }
 
@@ -230,8 +236,16 @@
             setTimeout(() => menu.style.display = 'none', 200);
         }
 
-        function handleEditFromMenu() { closeActionMenu(); openModal(selectedId, false); }
-        function handleDeleteFromMenu() { closeActionMenu(); openDeleteDialog(selectedId); }
+        function handleEditFromMenu() { 
+            closeActionMenu(); 
+            toggleFullTable(false); // Tutup full table jika sedang terbuka
+            openModal(selectedId, false); 
+        }
+
+        function handleDeleteFromMenu() { 
+            closeActionMenu(); 
+            openDeleteDialog(selectedId); 
+        }
 
         function openModal(id = null, isViewOnly = false) {
             const modal = document.getElementById('modalOverlay');
@@ -297,7 +311,7 @@
                 totalKrg += parseInt(i.jmlKarung || 0);
                 totalTap += parseFloat(i.jmlTap || 0);
                 totalSwp += parseFloat(i.jmlSweeping || 0);
-                return `<tr>
+                return `<tr data-id="${i.id}">
                     <td>${i.jamAwal}-${i.jamAkhir}</td><td>${i.namaProduk}</td><td>${i.versi}</td><td>${i.lineBagging}</td><td>${i.kavling}</td>
                     <td>${i.labelDari}-${i.labelSampai}</td><td>${i.jmlKarung}</td><td>${i.jmlTap}</td><td>${i.jmlSweeping}</td><td>${i.jmlRobek}</td>
                 </tr>`;
@@ -310,6 +324,9 @@
                 <td>${totalSwp.toFixed(2)}</td>
                 <td>-</td>
             </tr>`;
+
+            // Aktifkan gesture di Full Table setelah di render
+            setupGestures('#fullTableBody tr');
         }
 
         function calcLabels() {
@@ -337,6 +354,7 @@
             localData = localData.filter(x => x.id !== selectedId);
             localStorage.setItem('prod_v31', JSON.stringify(localData));
             render();
+            if(document.getElementById('fullTableOverlay').style.display === 'flex') renderFull();
             closeDeleteDialog();
             showToast("Produk dihapus");
         };
@@ -368,7 +386,7 @@
 
         function render() {
             const tb = document.getElementById('tableBody');
-            tb.innerHTML = localData.map(i => `<tr id="r-${i.id}">
+            tb.innerHTML = localData.map(i => `<tr data-id="${i.id}">
                 <td>
                     <div style="font-weight:800; color:#0f172a">${i.namaProduk}</div>
                     <div style="font-size:9px; opacity:0.5; margin-top:2px">${i.jamAwal} — ${i.jamAkhir}</div>
@@ -377,7 +395,7 @@
                 <td style="color:#2563eb; font-weight:800">${i.jmlKarung}</td>
                 <td>${i.lineBagging}</td>
             </tr>`).join('');
-            setupGestures();
+            setupGestures('#tableBody tr');
             lucide.createIcons();
         }
 

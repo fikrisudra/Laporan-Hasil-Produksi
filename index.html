@@ -3,19 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Laporan Produksi v28</title>
+    <title>Laporan Hasil Produksi v29</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; -webkit-tap-highlight-color: transparent; }
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; color: #1e293b; padding-bottom: 100px; overflow-x: hidden; }
         
+        /* Navbar */
         .navbar { position: sticky; top: 0; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f1f5f9; z-index: 100; }
         .logo { font-weight: 800; font-size: 0.9rem; color: #0f172a; text-transform: uppercase; }
         
-        /* Tombol Kirim Ke Sheet */
-        .btn-sync { background: #16a34a; color: white; border: none; padding: 10px 16px; border-radius: 12px; font-size: 11px; font-weight: 800; display: flex; align-items: center; gap: 8px; cursor: pointer; transition: 0.2s; }
-        .btn-sync:active { transform: scale(0.95); background: #15803d; }
+        .btn-sync { background: #16a34a; color: white; border: none; width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 10px rgba(22, 163, 74, 0.2); }
+        .btn-sync:active { transform: scale(0.9); }
 
         .container { max-width: 600px; margin: 0 auto; padding: 15px; }
         .card { background: white; border-radius: 24px; padding: 20px; border: 1px solid #f1f5f9; box-shadow: 0 4px 15px rgba(0,0,0,0.01); margin-bottom: 15px; }
@@ -25,42 +25,37 @@
         .field:focus { border-color: #2563eb; background: white; }
         .field-readonly { background: #f1f5f9; color: #64748b; cursor: not-allowed; border-style: dashed; }
 
-        .table-container { width: 100%; border-radius: 20px; border: 1px solid #f1f5f9; overflow: visible; }
-        table { width: 100%; border-collapse: collapse; font-size: 11px; text-align: left; }
-        th { background: #f8fafc; padding: 12px; font-weight: 800; color: #64748b; border-bottom: 1px solid #f1f5f9; }
-        td { padding: 16px 12px; border-bottom: 1px solid #f1f5f9; font-weight: 600; color: #475569; position: relative; }
-        tr:nth-child(even) td { background-color: #fcfdfe; }
+        /* Table & Gesture Style */
+        .table-container { width: 100%; border-radius: 20px; border: 1px solid #f1f5f9; overflow: hidden; }
+        table { width: 100%; border-collapse: collapse; font-size: 11px; }
+        th { background: #f8fafc; padding: 12px; font-weight: 800; color: #64748b; border-bottom: 1px solid #f1f5f9; text-align: left; }
+        td { padding: 16px 12px; border-bottom: 1px solid #f1f5f9; font-weight: 600; color: #475569; transition: 0.2s; user-select: none; }
+        tr:active td { background-color: #f1f5f9 !important; }
         .highlight-edit td { background-color: #f0fdf4 !important; color: #16a34a !important; }
 
-        .btn-action-trigger { background: #f1f5f9; border: none; width: 44px; height: 44px; border-radius: 12px; cursor: pointer; color: #64748b; display: flex; align-items: center; justify-content: center; transition: 0.2s; -webkit-tap-highlight-color: transparent; margin-left: auto; }
-        .btn-action-trigger:active { background: #e2e8f0; transform: scale(0.92); }
+        /* Action Menu (Context Menu) */
+        .action-menu-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; z-index: 4000; padding: 20px; }
+        .action-menu { background: white; width: 100%; max-width: 280px; border-radius: 24px; padding: 8px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); transform: scale(0.9); transition: 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .menu-open .action-menu { transform: scale(1); }
+        .action-menu button { width: 100%; padding: 16px; border: none; background: none; text-align: left; font-size: 13px; font-weight: 700; color: #475569; display: flex; align-items: center; gap: 12px; border-radius: 16px; margin-bottom: 4px; }
+        .action-menu button:last-child { margin-bottom: 0; color: #ef4444; }
+        .action-menu button:active { background: #f1f5f9; }
 
-        .dropdown { position: relative; }
-        .dropdown-content { display: none; position: absolute; right: 0; top: 48px; background: white; min-width: 160px; box-shadow: 0 15px 35px rgba(0,0,0,0.15); border-radius: 18px; z-index: 500; border: 1px solid #f1f5f9; overflow: hidden; animation: pop 0.2s ease-out; }
-        @keyframes pop { from { opacity:0; transform: scale(0.95); } to { opacity:1; transform: scale(1); } }
-        
-        .dropdown-content button { width: 100%; padding: 14px; border: none; background: none; text-align: left; font-size: 12px; font-weight: 700; color: #475569; cursor: pointer; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid #f8fafc; }
-        .dropdown-content button:last-child { border-bottom: none; color: #ef4444; }
-        .show { display: block !important; }
-
-        #toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px); background: #1e293b; color: white; padding: 14px 24px; border-radius: 20px; font-size: 13px; font-weight: 700; display: flex; align-items: center; gap: 12px; transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); opacity: 0; z-index: 2000; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+        /* Toast & Dialog */
+        #toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px); background: #1e293b; color: white; padding: 14px 24px; border-radius: 20px; font-size: 13px; font-weight: 700; display: flex; align-items: center; gap: 12px; transition: 0.5s; opacity: 0; z-index: 5000; }
         #toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
 
-        .dialog-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; z-index: 3000; padding: 20px; }
-        .dialog-box { background: white; width: 100%; max-width: 320px; border-radius: 28px; padding: 25px; text-align: center; }
-        .dialog-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 20px; }
-        .btn-cancel { background: #f1f5f9; border: none; padding: 14px; border-radius: 16px; font-weight: 700; color: #475569; }
-        .btn-confirm-del { background: #ef4444; border: none; padding: 14px; border-radius: 16px; font-weight: 700; color: white; }
-
+        .dialog-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); display: none; align-items: center; justify-content: center; z-index: 6000; padding: 20px; }
+        .dialog-box { background: white; width: 100%; max-width: 300px; border-radius: 28px; padding: 25px; text-align: center; }
+        
         .fab-container { position: fixed; bottom: 30px; right: 25px; z-index: 800; }
-        .btn-fab { width: 64px; height: 64px; background: #2563eb; color: white; border: none; border-radius: 22px; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 25px rgba(37, 99, 235, 0.4); cursor: pointer; transition: 0.2s; }
+        .btn-fab { width: 64px; height: 64px; background: #2563eb; color: white; border: none; border-radius: 22px; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 25px rgba(37, 99, 235, 0.4); }
 
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.3); backdrop-filter: blur(8px); display: none; align-items: flex-end; z-index: 1000; }
-        .modal-sheet { background: white; width: 100%; border-radius: 35px 35px 0 0; padding: 30px 25px; max-height: 92vh; overflow-y: auto; transform: translateY(100%); transition: 0.3s cubic-bezier(0, 0, 0.2, 1); }
+        .modal-sheet { background: white; width: 100%; border-radius: 35px 35px 0 0; padding: 30px 25px; max-height: 92vh; overflow-y: auto; transform: translateY(100%); transition: 0.3s; }
         .modal-open .modal-sheet { transform: translateY(0); }
         
         .full-table-overlay { position: fixed; inset: 0; background: white; z-index: 900; display: none; flex-direction: column; padding: 20px; }
-
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
     </style>
@@ -69,26 +64,35 @@
 
     <div id="toast"><i data-lucide="check-circle" size="18"></i> <span id="toastMsg">Berhasil</span></div>
 
+    <!-- Context Menu for Long Press -->
+    <div id="actionMenuOverlay" class="action-menu-overlay" onclick="closeActionMenu()">
+        <div class="action-menu" onclick="event.stopPropagation()">
+            <div style="padding: 12px 16px; font-size: 10px; font-weight: 800; color: #94a3b8; text-transform: uppercase;">Pilih Aksi</div>
+            <button onclick="handleEditFromMenu()"><i data-lucide="edit-3" size="18"></i> Edit Produk</button>
+            <button onclick="handleDeleteFromMenu()"><i data-lucide="trash-2" size="18"></i> Hapus Produk</button>
+        </div>
+    </div>
+
     <div id="deleteDialog" class="dialog-overlay">
         <div class="dialog-box">
-            <h3 style="font-weight:800; margin-bottom:8px">Hapus Data?</h3>
-            <div class="dialog-btns">
-                <button class="btn-cancel" onclick="closeDeleteDialog()">Batal</button>
-                <button class="btn-confirm-del" id="confirmDeleteBtn">Hapus</button>
+            <h3 style="font-weight:800; margin-bottom:12px">Hapus Produk ini?</h3>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                <button onclick="closeDeleteDialog()" style="background:#f1f5f9; border:none; padding:14px; border-radius:16px; font-weight:700;">Batal</button>
+                <button id="confirmDeleteBtn" style="background:#ef4444; border:none; padding:14px; border-radius:16px; font-weight:700; color:white;">Hapus</button>
             </div>
         </div>
     </div>
 
     <nav class="navbar">
-        <h1 class="logo">Produksi</h1>
+        <h1 class="logo">Laporan Hasil Produksi</h1>
         <button class="btn-sync" onclick="sendToGoogleSheet()">
-            <i data-lucide="send" size="16"></i> KIRIM KE SHEET
+            <i data-lucide="send" size="18"></i>
         </button>
     </nav>
 
     <div class="container">
         <div class="card">
-            <span class="section-title">Informasi Dasar</span>
+            <span class="section-title">Tanggal dan Jam</span>
             <div style="margin-bottom:12px"><input type="date" id="globalTanggal" class="field"></div>
             <div class="grid-2">
                 <select id="globalShift" class="field" onchange="autoFillShiftTime()">
@@ -101,20 +105,20 @@
             </div>
         </div>
 
-        <div class="card" style="padding:15px; overflow: visible;">
+        <div class="card" style="padding:15px;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px">
-                <span class="section-title" style="margin-bottom:0">Daftar Produksi</span>
-                <button class="btn-action-trigger" onclick="toggleFullTable(true)"><i data-lucide="maximize" size="18"></i></button>
+                <span class="section-title" style="margin-bottom:0">Daftar Produk</span>
+                <button style="background:none; border:none; color:#2563eb" onclick="toggleFullTable(true)"><i data-lucide="maximize" size="18"></i></button>
             </div>
             <div class="table-container">
                 <table>
                     <thead>
-                        <tr><th>Produk</th><th>Karung</th><th>Line</th><th style="text-align:right">Opsi</th></tr>
+                        <tr><th>Produk</th><th>Karung</th><th>Line</th></tr>
                     </thead>
                     <tbody id="tableBody"></tbody>
                 </table>
             </div>
-            <div id="emptyState" style="text-align:center; padding:50px; opacity:0.3; font-size:11px; font-weight:800">DATA KOSONG</div>
+            <div id="emptyState" style="text-align:center; padding:40px; opacity:0.3; font-size:10px; font-weight:800">TEKAN LAMA BARIS UNTUK OPSI</div>
         </div>
     </div>
 
@@ -122,23 +126,24 @@
         <button class="btn-fab" onclick="openModal()"><i data-lucide="plus" size="32"></i></button>
     </div>
 
+    <!-- Modal Input -->
     <div class="modal-overlay" id="modalOverlay">
         <div class="modal-sheet" id="modalSheet">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:25px">
-                <h2 id="modalHeaderTitle" style="font-weight:800; font-size:1.2rem">Input Data</h2>
+                <h2 id="modalHeaderTitle" style="font-weight:800; font-size:1.1rem">Tambah/Edit Produk</h2>
                 <button onclick="closeModal()" style="background:none; border:none; color:#cbd5e1"><i data-lucide="x-circle" size="30"></i></button>
             </div>
             <form id="prodForm">
                 <input type="hidden" id="editId">
                 <div class="grid-2" style="margin-bottom:15px">
                     <div><span class="section-title">Produk</span><input type="text" id="namaProduk" required class="field"></div>
-                    <div><span class="section-title">Versi (Vn)</span><input type="text" id="versi" required class="field" placeholder="V1"></div>
+                    <div><span class="section-title">Versi</span><input type="text" id="versi" required class="field" placeholder="V1"></div>
                 </div>
                 <div class="grid-2" style="margin-bottom:15px">
                     <div><span class="section-title">Line</span>
                         <select id="lineBagging" required class="field">
-                            <option value="Bagging Off 1">Bagging Off 1</option><option value="Bagging Off 2">Bagging Off 2</option>
-                            <option value="Bagging Off 3">Bagging Off 3</option><option value="Bagging Off 4">Bagging Off 4</option>
+                            <option value="Off 1">Line 1</option><option value="Off 2">Line 2</option>
+                            <option value="Off 3">Line 3</option><option value="Off 4">Line 4</option>
                         </select>
                     </div>
                     <div><span class="section-title">Kavling</span><input type="text" id="kavling" required class="field"></div>
@@ -160,31 +165,33 @@
                     <div><span class="section-title">Sweep</span><input type="number" step="0.01" id="jmlSweeping" class="field" value="0"></div>
                     <div><span class="section-title" style="color:#ef4444">Robek</span><input type="number" id="jmlRobek" class="field" value="0"></div>
                 </div>
-                <button type="submit" id="btnSimpan" style="width:100%; height:60px; background:#2563eb; color:white; border:none; border-radius:20px; font-weight:800; font-size:15px">SIMPAN DATA</button>
+                <button type="submit" style="width:100%; height:60px; background:#2563eb; color:white; border:none; border-radius:20px; font-weight:800;">SIMPAN PRODUK</button>
             </form>
         </div>
     </div>
 
+    <!-- Detail Produk (Full Screen) -->
     <div id="fullTableOverlay" class="full-table-overlay">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:25px">
-            <h2 style="font-weight:800">Log Produksi</h2>
+            <h2 style="font-weight:800">Detail Produk</h2>
             <button onclick="toggleFullTable(false)" style="border:none; background:#f1f5f9; padding:12px; border-radius:15px"><i data-lucide="x" size="22"></i></button>
         </div>
-        <div style="overflow-x: auto; flex-grow: 1; border: 1px solid #f1f5f9; border-radius: 20px;">
-            <table style="min-width: 1000px;">
+        <div style="overflow-x: auto; flex-grow: 1;">
+            <table style="min-width: 900px;">
                 <thead>
-                    <tr><th>Jam Ops</th><th>Produk</th><th>Line</th><th>Kavling</th><th>Label</th><th>Karung</th><th>Tap</th><th>Sweep</th><th>Robek</th><th style="text-align:right">Opsi</th></tr>
+                    <tr><th>Jam</th><th>Produk</th><th>Line</th><th>Kav</th><th>Label</th><th>Karung</th><th>Tap</th><th>Sweep</th><th>Robek</th></tr>
                 </thead>
                 <tbody id="fullTableBody"></tbody>
             </table>
         </div>
+        <div style="padding: 15px; font-size: 10px; font-weight: 700; color: #94a3b8; text-align: center;">TAHAN BARIS UNTUK EDIT/HAPUS</div>
     </div>
 
     <script>
         lucide.createIcons();
-        let localData = JSON.parse(localStorage.getItem('prod_v28')) || [];
-        let lastId = null;
-        let deleteId = null;
+        let localData = JSON.parse(localStorage.getItem('prod_v29')) || [];
+        let selectedId = null;
+        let pressTimer = null;
 
         function showToast(msg) {
             const t = document.getElementById('toast');
@@ -193,43 +200,69 @@
             setTimeout(() => t.classList.remove('show'), 3000);
         }
 
+        // Gesture Logic
+        function setupGestures() {
+            const rows = document.querySelectorAll('tbody tr');
+            rows.forEach(row => {
+                row.onmousedown = () => startPress(row.id.replace('r-', ''));
+                row.onmouseup = () => clearTimeout(pressTimer);
+                row.ontouchstart = () => startPress(row.id.replace('r-', ''));
+                row.ontouchend = () => clearTimeout(pressTimer);
+            });
+        }
+
+        function startPress(id) {
+            clearTimeout(pressTimer);
+            pressTimer = setTimeout(() => {
+                selectedId = parseInt(id);
+                openActionMenu();
+            }, 600); // Tahan 0.6 detik
+        }
+
+        function openActionMenu() {
+            const menu = document.getElementById('actionMenuOverlay');
+            menu.style.display = 'flex';
+            setTimeout(() => menu.classList.add('menu-open'), 10);
+            if(window.navigator.vibrate) window.navigator.vibrate(50);
+        }
+
+        function closeActionMenu() {
+            const menu = document.getElementById('actionMenuOverlay');
+            menu.classList.remove('menu-open');
+            setTimeout(() => menu.style.display = 'none', 200);
+        }
+
+        function handleEditFromMenu() {
+            closeActionMenu();
+            openModal(selectedId);
+        }
+
+        function handleDeleteFromMenu() {
+            closeActionMenu();
+            openDeleteDialog(selectedId);
+        }
+
+        // Logic Functions
         function calcLabels() {
-            const startVal = document.getElementById('labelDari').value;
-            const qtyVal = document.getElementById('jmlKarung').value;
-            const target = document.getElementById('labelSampai');
-            if (startVal !== "" && qtyVal !== "") {
-                const start = parseInt(startVal);
-                const qty = parseInt(qtyVal);
-                target.value = (qty > 0) ? (start + qty - 1) : start;
-            } else { target.value = ""; }
+            const s = parseInt(document.getElementById('labelDari').value);
+            const q = parseInt(document.getElementById('jmlKarung').value);
+            document.getElementById('labelSampai').value = (s && q) ? (s + q - 1) : "";
         }
 
         function autoFillShiftTime() {
-            const s = document.getElementById('globalShift').value;
             const t = { "1": "08:00 — 16:00", "2": "16:00 — 00:00", "3": "00:00 — 08:00" };
-            document.getElementById('displayJamKerja').innerText = t[s] || "00:00 — 00:00";
+            document.getElementById('displayJamKerja').innerText = t[document.getElementById('globalShift').value] || "00:00 — 00:00";
         }
-
-        function toggleDropdown(id, sfx) {
-            const eid = 'dd-' + id + sfx;
-            document.querySelectorAll('.dropdown-content').forEach(d => { if(d.id !== eid) d.classList.remove('show'); });
-            document.getElementById(eid).classList.toggle('show');
-        }
-
-        window.onclick = e => { if (!e.target.closest('.dropdown')) document.querySelectorAll('.dropdown-content').forEach(d => d.classList.remove('show')); }
 
         function toggleFullTable(show) {
             document.getElementById('fullTableOverlay').style.display = show ? 'flex' : 'none';
             if(show) renderFull();
         }
 
-        function openModal(id = null, view = false) {
+        function openModal(id = null) {
             const modal = document.getElementById('modalOverlay');
-            document.getElementById('btnSimpan').style.display = view ? 'none' : 'block';
-            document.getElementById('modalHeaderTitle').innerText = id ? (view ? "Detail Data" : "Edit Data") : "Tambah Data";
             modal.style.display = 'flex';
             setTimeout(() => document.body.classList.add('modal-open'), 10);
-            
             if(id) {
                 const i = localData.find(x => x.id === id);
                 document.getElementById('editId').value = i.id;
@@ -257,13 +290,22 @@
             setTimeout(() => document.getElementById('modalOverlay').style.display = 'none', 300);
         }
 
-        function openDeleteDialog(id) { deleteId = id; document.getElementById('deleteDialog').style.display = 'flex'; }
-        function closeDeleteDialog() { document.getElementById('deleteDialog').style.display = 'none'; deleteId = null; }
+        function openDeleteDialog(id) {
+            selectedId = id;
+            document.getElementById('deleteDialog').style.display = 'flex';
+        }
+
+        function closeDeleteDialog() {
+            document.getElementById('deleteDialog').style.display = 'none';
+        }
 
         document.getElementById('confirmDeleteBtn').onclick = () => {
-            localData = localData.filter(x => x.id !== deleteId);
-            localStorage.setItem('prod_v28', JSON.stringify(localData));
-            showToast("Data dihapus"); render(); closeDeleteDialog();
+            localData = localData.filter(x => x.id !== selectedId);
+            localStorage.setItem('prod_v29', JSON.stringify(localData));
+            render();
+            if(document.getElementById('fullTableOverlay').style.display === 'flex') renderFull();
+            closeDeleteDialog();
+            showToast("Produk dihapus");
         };
 
         document.getElementById('prodForm').onsubmit = e => {
@@ -281,48 +323,28 @@
                 jmlTap: document.getElementById('jmlTap').value || 0, jmlSweeping: document.getElementById('jmlSweeping').value || 0,
                 jmlRobek: document.getElementById('jmlRobek').value || 0
             };
-            if(eid) { localData = localData.map(x => x.id === parseInt(eid) ? obj : x); lastId = obj.id; } 
-            else { localData.push(obj); }
-            localStorage.setItem('prod_v28', JSON.stringify(localData));
-            closeModal(); render(); showToast("Data disimpan");
+            if(eid) localData = localData.map(x => x.id === parseInt(eid) ? obj : x);
+            else localData.push(obj);
+            localStorage.setItem('prod_v29', JSON.stringify(localData));
+            closeModal(); render(); showToast("Berhasil disimpan");
         };
-
-        function sendToGoogleSheet() {
-            if(localData.length === 0) return alert("Belum ada data.");
-            showToast("Sinkronisasi...");
-            // Integrasi ke Sheets via Webhook/Apps Script diletakkan di sini
-            setTimeout(() => showToast("Berhasil terkirim ke Sheets"), 2000);
-        }
 
         function render() {
             const tb = document.getElementById('tableBody');
-            tb.innerHTML = '';
-            document.getElementById('emptyState').style.display = localData.length ? 'none' : 'block';
-            localData.forEach(i => {
-                const hilite = i.id === lastId ? 'highlight-edit' : '';
-                tb.insertAdjacentHTML('beforeend', `<tr class="${hilite}" id="r-${i.id}">
-                    <td><div style="font-weight:800">${i.namaProduk} (${i.versi})</div><div style="font-size:8px; opacity:0.5">Kav: ${i.kavling}</div></td>
-                    <td style="color:#2563eb; font-weight:800">${i.jmlKarung}</td>
-                    <td>${i.lineBagging}</td>
-                    <td style="text-align:right"><div class="dropdown">
-                        <button class="btn-action-trigger" onclick="toggleDropdown(${i.id}, 'm')"><i data-lucide="more-vertical" size="18"></i></button>
-                        <div id="dd-${i.id}m" class="dropdown-content">
-                            <button onclick="openModal(${i.id})"><i data-lucide="edit-2" size="15"></i> Edit</button>
-                            <button onclick="openDeleteDialog(${i.id})"><i data-lucide="trash" size="15"></i> Hapus</button>
-                        </div>
-                    </div></td></tr>`);
-                if(i.id === lastId) setTimeout(() => { document.getElementById(`r-${i.id}`)?.classList.remove('highlight-edit'); lastId=null; }, 2000);
-            });
+            tb.innerHTML = localData.map(i => `<tr id="r-${i.id}">
+                <td><div style="font-weight:800">${i.namaProduk} (${i.versi})</div><div style="font-size:8px; opacity:0.5">${i.jamAwal}-${i.jamAkhir}</div></td>
+                <td style="color:#2563eb; font-weight:800">${i.jmlKarung}</td>
+                <td>${i.lineBagging}</td></tr>`).join('');
+            setupGestures();
             lucide.createIcons();
         }
 
         function renderFull() {
             const fb = document.getElementById('fullTableBody');
-            fb.innerHTML = localData.map(i => `<tr>
-                <td>${i.jamAwal}-${i.jamAkhir}</td><td>${i.namaProduk} (${i.versi})</td><td>${i.lineBagging}</td><td>${i.kavling}</td>
-                <td>${i.labelDari}-${i.labelSampai}</td><td>${i.jmlKarung}</td><td>${i.jmlTap}</td><td>${i.jmlSweeping}</td><td>${i.jmlRobek}</td>
-                <td style="text-align:right"><button class="btn-action-trigger" onclick="openModal(${i.id})"><i data-lucide="edit-2" size="14"></i></button></td></tr>`).join('');
-            lucide.createIcons();
+            fb.innerHTML = localData.map(i => `<tr id="rf-${i.id}">
+                <td>${i.jamAwal}-${i.jamAkhir}</td><td>${i.namaProduk}</td><td>${i.lineBagging}</td><td>${i.kavling}</td>
+                <td>${i.labelDari}-${i.labelSampai}</td><td>${i.jmlKarung}</td><td>${i.jmlTap}</td><td>${i.jmlSweeping}</td><td>${i.jmlRobek}</td></tr>`).join('');
+            setupGestures();
         }
 
         window.onload = render;

@@ -19,6 +19,8 @@
         .section-title { font-size: 10px; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; display: block; }
         
         .field { width: 100%; background: #f8fafc; border: 1.5px solid #f1f5f9; border-radius: 14px; padding: 12px; font-size: 14px; font-weight: 700; color: #334155; outline: none; }
+        .field:focus { border-color: #cbd5e1; background: white; }
+        .field-readonly { background: #f1f5f9; color: #94a3b8; cursor: not-allowed; }
         .field-time-display { font-family: 'Monaco', monospace; font-size: 13px; font-weight: 700; color: #2563eb; padding: 10px; }
 
         .table-header-flex { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
@@ -29,7 +31,6 @@
         th { background: #f8fafc; padding: 12px; font-weight: 800; color: #64748b; border-bottom: 1px solid #f1f5f9; }
         td { padding: 12px; border-bottom: 1px solid #f8fafc; font-weight: 600; color: #475569; position: relative; }
 
-        /* DROPDOWN UI */
         .dropdown { position: relative; display: inline-block; }
         .btn-dots { background: #f1f5f9; border: none; padding: 8px; border-radius: 10px; cursor: pointer; color: #64748b; }
         .dropdown-content { display: none; position: absolute; right: 0; top: 38px; background: white; min-width: 130px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); border-radius: 14px; z-index: 400; border: 1px solid #f1f5f9; overflow: hidden; }
@@ -38,10 +39,8 @@
         .show { display: block; }
 
         .bottom-bar { position: fixed; bottom: 0; left: 0; right: 0; padding: 25px; background: linear-gradient(to top, white 80%, transparent); z-index: 90; display: flex; justify-content: center; }
-        .btn-add-ghost { background: transparent; border: none; color: #2563eb; font-weight: 800; font-size: 13px; display: flex; align-items: center; gap: 8px; cursor: pointer; transition: 0.2s; padding: 10px 20px; }
-        .btn-add-ghost:active { opacity: 0.5; transform: scale(0.95); }
+        .btn-add-ghost { background: transparent; border: none; color: #2563eb; font-weight: 800; font-size: 13px; display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 10px 20px; }
 
-        /* OVERLAY FULL TABLE */
         .full-table-overlay { position: fixed; inset: 0; background: white; z-index: 300; display: none; flex-direction: column; padding: 20px; }
         .full-table-overlay.show { display: flex; }
 
@@ -80,11 +79,8 @@
         <div class="card" style="padding:15px">
             <div class="table-header-flex">
                 <span class="section-title" style="margin-bottom:0">Daftar Item</span>
-                <button class="btn-icon-only" onclick="toggleFullTable(true)">
-                    <i data-lucide="maximize" size="16"></i>
-                </button>
+                <button class="btn-icon-only" onclick="toggleFullTable(true)"><i data-lucide="maximize" size="16"></i></button>
             </div>
-            
             <div class="table-container">
                 <table>
                     <thead>
@@ -144,34 +140,50 @@
             
             <form id="prodForm">
                 <input type="hidden" id="editId">
+                
                 <div class="grid-2" style="margin-bottom:15px">
                     <div><span class="section-title">Nama Produk</span><input type="text" id="namaProduk" required class="field"></div>
-                    <div><span class="section-title">Line</span><input type="text" id="lineBagging" required class="field"></div>
+                    <div>
+                        <span class="section-title">Line</span>
+                        <select id="lineBagging" required class="field">
+                            <option value="" disabled selected>-</option>
+                            <option value="Bagging Off 1">Bagging Off 1</option>
+                            <option value="Bagging Off 2">Bagging Off 2</option>
+                            <option value="Bagging Off 3">Bagging Off 3</option>
+                            <option value="Bagging Off 4">Bagging Off 4</option>
+                        </select>
+                    </div>
                 </div>
+
                 <div class="grid-2" style="margin-bottom:15px">
                     <div><span class="section-title">Jam Mulai</span><input type="time" id="jamAwal" required class="field"></div>
                     <div><span class="section-title">Jam Akhir</span><input type="time" id="jamAkhir" required class="field"></div>
                 </div>
+
                 <div class="grid-2" style="margin-bottom:15px">
                     <div><span class="section-title">Versi</span><input type="text" id="versi" required class="field"></div>
                     <div><span class="section-title">Kavling</span><input type="text" id="kavlingTujuan" required class="field"></div>
                 </div>
+
                 <div style="margin-bottom:15px">
                     <span class="section-title">Nomor Label</span>
                     <div class="grid-2">
-                        <input type="text" id="labelDari" placeholder="Mulai" required class="field">
-                        <input type="text" id="labelSampai" placeholder="Selesai" required class="field">
+                        <input type="number" id="labelDari" placeholder="Mulai" required class="field" oninput="calculateLabelEnd()">
+                        <input type="number" id="labelSampai" placeholder="Otomatis" readonly class="field field-readonly">
                     </div>
                 </div>
+
                 <div class="grid-2" style="margin-bottom:15px">
                     <div><span class="section-title">Batch</span><input type="number" id="jmlBatch" required class="field"></div>
-                    <div><span class="section-title" style="color:#2563eb">Karung</span><input type="number" id="jmlKarung" required class="field" style="background:#eff6ff"></div>
+                    <div><span class="section-title" style="color:#2563eb">Karung</span><input type="number" id="jmlKarung" required class="field" style="background:#eff6ff" oninput="calculateLabelEnd()"></div>
                 </div>
+
                 <div class="grid-3" style="margin-bottom:25px">
-                    <div><span class="section-title">Tap (Kg)</span><input type="number" step="0.01" id="jmlTap" required class="field"></div>
-                    <div><span class="section-title">Sweeping (Kg)</span><input type="number" step="0.01" id="jmlSweeping" required class="field"></div>
-                    <div><span class="section-title" style="color:#ef4444">Robek</span><input type="number" id="jmlRobek" required class="field"></div>
+                    <div><span class="section-title">Tap (Kg)</span><input type="number" step="0.01" id="jmlTap" class="field" placeholder="0"></div>
+                    <div><span class="section-title">Sweeping (Kg)</span><input type="number" step="0.01" id="jmlSweeping" class="field" placeholder="0"></div>
+                    <div><span class="section-title" style="color:#ef4444">Robek</span><input type="number" id="jmlRobek" class="field" placeholder="0"></div>
                 </div>
+
                 <button type="submit" id="btnSimpan" style="width:100%; height:55px; background:#2563eb; color:white; border:none; border-radius:18px; font-weight:800; cursor:pointer">SIMPAN DATA</button>
             </form>
         </div>
@@ -179,7 +191,20 @@
 
     <script>
         lucide.createIcons();
-        let localData = JSON.parse(localStorage.getItem('prod_v21')) || [];
+        let localData = JSON.parse(localStorage.getItem('prod_v22')) || [];
+
+        // OTOMATIS HITUNG LABEL
+        function calculateLabelEnd() {
+            const start = parseInt(document.getElementById('labelDari').value);
+            const qty = parseInt(document.getElementById('jmlKarung').value);
+            const target = document.getElementById('labelSampai');
+            
+            if (!isNaN(start) && !isNaN(qty)) {
+                target.value = (start + qty) - 1;
+            } else {
+                target.value = "";
+            }
+        }
 
         function autoFillShiftTime() {
             const shift = document.getElementById('globalShift').value;
@@ -208,11 +233,9 @@
         function openModal(editId = null, isView = false) {
             const modal = document.getElementById('modalOverlay');
             const btnSimpan = document.getElementById('btnSimpan');
-            const title = document.getElementById('modalHeaderTitle');
             modal.style.display = 'flex';
             setTimeout(() => document.body.classList.add('modal-open'), 10);
             btnSimpan.style.display = isView ? 'none' : 'block';
-            title.innerText = isView ? "Detail Produk" : (editId ? "Edit Produk" : "Tambah produk");
 
             if(editId) {
                 const item = localData.find(i => i.id === editId);
@@ -256,13 +279,13 @@
                 labelSampai: document.getElementById('labelSampai').value,
                 jmlBatch: document.getElementById('jmlBatch').value,
                 jmlKarung: document.getElementById('jmlKarung').value,
-                jmlRobek: document.getElementById('jmlRobek').value,
-                jmlTap: document.getElementById('jmlTap').value,
-                jmlSweeping: document.getElementById('jmlSweeping').value
+                jmlRobek: document.getElementById('jmlRobek').value || 0,
+                jmlTap: document.getElementById('jmlTap').value || 0,
+                jmlSweeping: document.getElementById('jmlSweeping').value || 0
             };
             if(editId) localData = localData.map(i => i.id === parseInt(editId) ? itemData : i);
             else localData.push(itemData);
-            localStorage.setItem('prod_v21', JSON.stringify(localData));
+            localStorage.setItem('prod_v22', JSON.stringify(localData));
             closeModal();
             render();
             if(document.getElementById('fullTableOverlay').classList.contains('show')) renderFullTable();
@@ -270,10 +293,8 @@
 
         function render() {
             const tableBody = document.getElementById('tableBody');
-            const emptyState = document.getElementById('emptyState');
             tableBody.innerHTML = '';
-            if(localData.length === 0) emptyState.style.display = 'block';
-            else emptyState.style.display = 'none';
+            document.getElementById('emptyState').style.display = localData.length ? 'none' : 'block';
 
             localData.forEach((item) => {
                 const row = `
@@ -331,16 +352,13 @@
         function removeItem(id) {
             if(confirm("Hapus data ini?")) {
                 localData = localData.filter(i => i.id !== id);
-                localStorage.setItem('prod_v21', JSON.stringify(localData));
+                localStorage.setItem('prod_v22', JSON.stringify(localData));
                 render();
                 if(document.getElementById('fullTableOverlay').classList.contains('show')) renderFullTable();
             }
         }
 
-        function sendToBackend() {
-            alert("Sinkronisasi dimulai...");
-        }
-
+        function sendToBackend() { alert("Sinkronisasi dimulai..."); }
         window.onload = render;
     </script>
 </body>

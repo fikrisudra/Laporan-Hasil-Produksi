@@ -22,7 +22,7 @@
         .field-time-display { font-family: 'Monaco', monospace; font-size: 13px; font-weight: 700; color: #2563eb; padding: 10px; }
 
         .table-header-flex { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-        .btn-view-full { background: #f1f5f9; color: #64748b; border: 1px solid #e2e8f0; padding: 6px 12px; border-radius: 10px; font-size: 9px; font-weight: 800; cursor: pointer; text-transform: uppercase; }
+        .btn-icon-only { background: #f1f5f9; color: #64748b; border: none; width: 32px; height: 32px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
 
         .table-container { width: 100%; border-radius: 18px; border: 1px solid #f1f5f9; overflow: visible; }
         table { width: 100%; border-collapse: collapse; font-size: 11px; text-align: left; }
@@ -36,20 +36,17 @@
         .dropdown-content button:hover { background: #f8fafc; color: #2563eb; }
         .show { display: block; }
 
+        /* NO BACKGROUND ADD BUTTON */
+        .bottom-bar { position: fixed; bottom: 0; left: 0; right: 0; padding: 25px; background: linear-gradient(to top, white 80%, transparent); z-index: 90; display: flex; justify-content: center; }
+        .btn-add-ghost { 
+            background: transparent; border: none; color: #2563eb; 
+            font-weight: 800; font-size: 13px; display: flex; align-items: center; gap: 8px; 
+            cursor: pointer; transition: 0.2s; padding: 10px 20px;
+        }
+        .btn-add-ghost:active { opacity: 0.5; transform: scale(0.95); }
+
         .full-table-overlay { position: fixed; inset: 0; background: white; z-index: 300; display: none; flex-direction: column; padding: 20px; }
         .full-table-overlay.show { display: flex; }
-
-        /* SOFT BLUE ADD BUTTON */
-        .bottom-bar { position: fixed; bottom: 0; left: 0; right: 0; padding: 20px; background: linear-gradient(to top, white 70%, transparent); z-index: 90; display: flex; justify-content: center; }
-        .btn-add-soft { 
-            width: 100%; max-width: 380px; height: 56px; 
-            background: #eff6ff; color: #2563eb; border: 1px solid #dbeafe; 
-            border-radius: 28px; font-weight: 800; font-size: 12px; 
-            display: flex; align-items: center; justify-content: center; gap: 10px; 
-            box-shadow: 0 10px 20px rgba(37, 99, 235, 0.1); 
-            transition: 0.2s;
-        }
-        .btn-add-soft:active { transform: scale(0.97); background: #dbeafe; }
 
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.25); backdrop-filter: blur(8px); display: none; align-items: flex-end; z-index: 200; }
         .modal-sheet { background: white; width: 100%; border-radius: 32px 32px 0 0; padding: 25px; max-height: 90vh; overflow-y: auto; transform: translateY(100%); transition: 0.3s ease-out; }
@@ -69,14 +66,14 @@
 
     <div class="container">
         <div class="card">
-            <span class="section-title">Konfigurasi Jam Kerja</span>
+            <span class="section-title">Tanggal dan Jam</span>
             <div style="margin-bottom:10px"><input type="date" id="globalTanggal" class="field"></div>
             <div class="grid-2">
                 <select id="globalShift" class="field" onchange="autoFillShiftTime()">
                     <option value="" disabled selected>Pilih Shift</option>
-                    <option value="1">Shift 01</option>
-                    <option value="2">Shift 02</option>
-                    <option value="3">Shift 03</option>
+                    <option value="1">Shift 1</option>
+                    <option value="2">Shift 2</option>
+                    <option value="3">Shift 3</option>
                 </select>
                 <div style="display:flex; align-items:center; justify-content:center; background:#f8fafc; border-radius:14px; border:1px solid #f1f5f9">
                     <span id="displayJamKerja" class="field-time-display">00:00 — 00:00</span>
@@ -87,7 +84,9 @@
         <div class="card" style="padding:15px">
             <div class="table-header-flex">
                 <span class="section-title" style="margin-bottom:0">Daftar Item</span>
-                <button class="btn-view-full" onclick="toggleFullTable(true)">Full Table <i data-lucide="expand" size="12"></i></button>
+                <button class="btn-icon-only" onclick="toggleFullTable(true)">
+                    <i data-lucide="maximize" size="16"></i>
+                </button>
             </div>
             
             <div class="table-container">
@@ -114,7 +113,7 @@
         </div>
         <div style="overflow-x: auto; flex-grow: 1; border-radius: 16px; border: 1px solid #f1f5f9;">
             <table style="min-width: 900px; font-size: 10px;">
-                <thead style="position: sticky; top: 0; z-index: 10;">
+                <thead>
                     <tr>
                         <th>Jam Ops</th>
                         <th>Produk</th>
@@ -134,8 +133,8 @@
     </div>
 
     <div class="bottom-bar">
-        <button class="btn-add-soft" onclick="openModal()">
-            <i data-lucide="plus-circle" size="20"></i> TAMBAH PRODUK
+        <button class="btn-add-ghost" onclick="openModal()">
+            <i data-lucide="plus-circle" size="22"></i> TAMBAH PRODUK
         </button>
     </div>
 
@@ -148,14 +147,15 @@
             
             <form id="prodForm">
                 <input type="hidden" id="editId">
+                
                 <div class="grid-2" style="margin-bottom:10px">
                     <div><span class="section-title">Nama Produk</span><input type="text" id="namaProduk" required class="field"></div>
                     <div><span class="section-title">Line</span><input type="text" id="lineBagging" required class="field"></div>
                 </div>
 
                 <div class="grid-2" style="margin-bottom:10px">
-                    <div><span class="section-title">Jam Mulai Ops</span><input type="time" id="jamAwal" required class="field"></div>
-                    <div><span class="section-title">Jam Akhir Ops</span><input type="time" id="jamAkhir" required class="field"></div>
+                    <div><span class="section-title">Jam Mulai</span><input type="time" id="jamAwal" required class="field"></div>
+                    <div><span class="section-title">Jam Akhir</span><input type="time" id="jamAkhir" required class="field"></div>
                 </div>
 
                 <div class="grid-2" style="margin-bottom:10px">
@@ -164,22 +164,22 @@
                 </div>
 
                 <div class="label-area">
-                    <span class="section-title">Seri Label</span>
+                    <span class="section-title">Nomor Label</span>
                     <div class="grid-2">
                         <input type="text" id="labelDari" placeholder="Mulai" required class="field">
                         <input type="text" id="labelSampai" placeholder="Selesai" required class="field">
                     </div>
                 </div>
 
-                <div class="grid-3" style="margin-bottom:15px">
+                <div class="grid-2" style="margin-bottom:10px">
+                    <div><span class="section-title">Batch</span><input type="number" id="jmlBatch" required class="field"></div>
                     <div><span class="section-title" style="color:#2563eb">Karung</span><input type="number" id="jmlKarung" required class="field" style="background:#eff6ff"></div>
-                    <div><span class="section-title">Tap (Kg)</span><input type="number" step="0.01" id="jmlTap" required class="field"></div>
-                    <div><span class="section-title">Sweep (Kg)</span><input type="number" step="0.01" id="jmlSweeping" required class="field"></div>
                 </div>
 
-                <div class="grid-2" style="margin-bottom:20px">
+                <div class="grid-3" style="margin-bottom:20px">
+                    <div><span class="section-title">Tap (Kg)</span><input type="number" step="0.01" id="jmlTap" required class="field"></div>
+                    <div><span class="section-title">Sweeping (Kg)</span><input type="number" step="0.01" id="jmlSweeping" required class="field"></div>
                     <div><span class="section-title" style="color:#ef4444">Robek</span><input type="number" id="jmlRobek" required class="field"></div>
-                    <div><span class="section-title">Batch</span><input type="number" id="jmlBatch" required class="field"></div>
                 </div>
 
                 <button type="submit" id="btnSimpan" style="width:100%; height:55px; background:#2563eb; color:white; border:none; border-radius:18px; font-weight:800; cursor:pointer">SIMPAN DATA</button>
@@ -189,17 +189,15 @@
 
     <script>
         lucide.createIcons();
-        let localData = JSON.parse(localStorage.getItem('prod_v18')) || [];
+        let localData = JSON.parse(localStorage.getItem('prod_v19')) || [];
 
         function autoFillShiftTime() {
             const shift = document.getElementById('globalShift').value;
             const display = document.getElementById('displayJamKerja');
             let timeRange = "00:00 — 00:00";
-
             if (shift === "1") timeRange = "08:00 — 16:00";
             else if (shift === "2") timeRange = "16:00 — 00:00";
             else if (shift === "3") timeRange = "00:00 — 08:00";
-
             display.innerText = timeRange;
         }
 
@@ -273,7 +271,7 @@
             };
             if(editId) localData = localData.map(i => i.id === parseInt(editId) ? itemData : i);
             else localData.push(itemData);
-            localStorage.setItem('prod_v18', JSON.stringify(localData));
+            localStorage.setItem('prod_v19', JSON.stringify(localData));
             closeModal();
             render();
         });
@@ -330,14 +328,12 @@
         function removeItem(id) {
             if(confirm("Hapus data ini?")) {
                 localData = localData.filter(i => i.id !== id);
-                localStorage.setItem('prod_v18', JSON.stringify(localData));
+                localStorage.setItem('prod_v19', JSON.stringify(localData));
                 render();
             }
         }
 
         function sendToBackend() {
-            if(!document.getElementById('globalTanggal').value) return alert("Pilih Tanggal!");
-            if(!document.getElementById('globalShift').value) return alert("Pilih Shift!");
             alert("Sinkronisasi dimulai...");
         }
 

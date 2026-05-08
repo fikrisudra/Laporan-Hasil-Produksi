@@ -2,193 +2,199 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Laporan Produksi Pro</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Produksi Pro Mobile</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap');
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; }
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background-color: #f1f5f9;
+            -webkit-tap-highlight-color: transparent;
+        }
         
-        /* Mobile-First Table Hide/Show */
-        .desktop-table { display: none; }
-        @media (min-width: 1024px) {
-            .desktop-table { display: table; }
-            .mobile-cards { display: none; }
+        .safe-area-bottom { padding-bottom: env(safe-area-inset-bottom); }
+        
+        /* Input & Select Reset */
+        input, select {
+            @apply w-full px-4 py-3 bg-white border border-slate-200 rounded-2xl text-sm transition-all outline-none shadow-sm appearance-none;
         }
+        input:focus { @apply border-blue-500 ring-4 ring-blue-50; }
+        
+        .label-mobile { @apply block text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 ml-1; }
 
-        /* Input Styling */
-        .input-proper {
-            @apply w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm transition-all outline-none;
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 0px; background: transparent; }
+
+        /* Animation */
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
         }
-        .input-proper:focus {
-            @apply bg-white border-blue-500 ring-4 ring-blue-50;
-        }
-        .label-proper {
-            @apply block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5 ml-1;
-        }
+        .animate-slide-up { animation: slideUp 0.3s ease-out; }
     </style>
 </head>
-<body class="antialiased text-slate-900 pb-28">
+<body class="antialiased text-slate-900">
 
-    <header class="bg-white border-b sticky top-0 z-30 shadow-sm">
-        <div class="max-w-7xl mx-auto px-4 py-4">
-            <div class="flex justify-between items-center mb-4">
-                <h1 class="text-lg font-bold flex items-center gap-2 text-slate-800">
-                    <div class="p-2 bg-blue-600 rounded-lg text-white">
-                        <i data-lucide="layout-grid" class="w-5 h-5"></i>
-                    </div>
-                    <span>Produksi <span class="text-blue-600">App</span></span>
-                </h1>
-                <button onclick="sendToBackend()" id="btnKirim" class="flex items-center gap-2 px-5 py-2.5 bg-green-600 text-white rounded-xl hover:bg-green-700 shadow-md transition-all font-bold text-sm active:scale-95">
-                    <i data-lucide="cloud-upload" class="w-4 h-4"></i> Kirim
-                </button>
+    <header class="bg-white/80 backdrop-blur-lg border-b border-slate-100 sticky top-0 z-40 px-4 py-4 shadow-sm">
+        <div class="max-w-md mx-auto flex justify-between items-center">
+            <div>
+                <h1 class="text-xl font-bold tracking-tight">Produksi<span class="text-blue-600">App</span></h1>
+                <p class="text-[10px] text-slate-400 font-bold uppercase tracking-tighter" id="syncStatus">Offline Mode</p>
             </div>
-            
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-                <div class="col-span-2 md:col-span-1">
-                    <label class="label-proper">Tanggal</label>
-                    <input type="date" id="globalTanggal" class="input-proper">
-                </div>
-                <div>
-                    <label class="label-proper">Shift</label>
-                    <select id="globalShift" class="input-proper">
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                    </select>
-                </div>
-                <div class="flex gap-2 col-span-1">
-                    <div class="w-full">
-                        <label class="label-proper">Jam Awal</label>
-                        <input type="time" id="globalJamAwal" class="input-proper">
-                    </div>
-                    <div class="w-full">
-                        <label class="label-proper">Akhir</label>
-                        <input type="time" id="globalJamAkhir" class="input-proper">
-                    </div>
-                </div>
-            </div>
+            <button onclick="sendToBackend()" id="btnKirim" class="flex items-center gap-2 px-4 py-2.5 bg-green-600 text-white rounded-xl font-bold text-sm shadow-lg shadow-green-100 active:scale-95 transition-all">
+                <i data-lucide="upload-cloud" class="w-4 h-4"></i>
+                <span>Kirim</span>
+            </button>
         </div>
     </header>
 
-    <main class="max-w-7xl mx-auto p-4">
-        <div id="emptyState" class="hidden text-center py-16">
-            <i data-lucide="inbox" class="w-12 h-12 mx-auto text-slate-300 mb-2"></i>
-            <p class="text-slate-400 text-sm">Belum ada data di tabel.</p>
-        </div>
-
-        <div class="hidden lg:block bg-white rounded-2xl border border-slate-200 overflow-hidden">
-            <table class="w-full desktop-table">
-                <thead class="bg-slate-50 border-b border-slate-200">
-                    <tr class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
-                        <th class="px-4 py-4 text-left">Produk</th>
-                        <th class="px-4 py-4 text-left">Line/Kav</th>
-                        <th class="px-4 py-4 text-center">Batch</th>
-                        <th class="px-4 py-4 text-center">Karung</th>
-                        <th class="px-4 py-4 text-center">Robek</th>
-                        <th class="px-4 py-4 text-center">Tap(Kg)</th>
-                        <th class="px-4 py-4 text-center">Sweep(Kg)</th>
-                        <th class="px-4 py-4 text-left">Label</th>
-                        <th class="px-4 py-4 text-right">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody id="desktopTableBody" class="divide-y divide-slate-100"></tbody>
-            </table>
-        </div>
-
-        <div id="mobileCardsBody" class="mobile-cards grid grid-cols-1 gap-4 lg:hidden">
+    <main class="max-w-md mx-auto px-4 pt-6 pb-32">
+        <div class="bg-blue-600 rounded-3xl p-5 shadow-xl shadow-blue-100 mb-8 text-white">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="p-2 bg-blue-500 rounded-xl"><i data-lucide="calendar" class="w-5 h-5"></i></div>
+                <h2 class="font-bold">Info Kerja Utama</h2>
             </div>
+            <div class="space-y-4">
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="col-span-2">
+                        <label class="block text-[10px] font-bold text-blue-200 uppercase mb-1">Tanggal Produksi</label>
+                        <input type="date" id="globalTanggal" class="!bg-blue-700 !border-blue-500 !text-white !placeholder-blue-300">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold text-blue-200 uppercase mb-1">Shift</label>
+                        <select id="globalShift" class="!bg-blue-700 !border-blue-500 !text-white">
+                            <option value="1">Shift 1</option>
+                            <option value="2">Shift 2</option>
+                            <option value="3">Shift 3</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold text-blue-200 uppercase mb-1">Jam Kerja</label>
+                        <div class="flex items-center gap-2">
+                            <input type="time" id="globalJamAwal" class="!bg-blue-700 !border-blue-500 !text-white !p-2 !text-xs text-center">
+                            <span>-</span>
+                            <input type="time" id="globalJamAkhir" class="!bg-blue-700 !border-blue-500 !text-white !p-2 !text-xs text-center">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex justify-between items-end mb-4 px-1">
+            <h3 class="font-bold text-slate-800">Daftar Produk</h3>
+            <span class="text-[10px] font-bold text-slate-400 bg-slate-200 px-2 py-1 rounded-full" id="counterData">0 ITEM</span>
+        </div>
+
+        <div id="listBody" class="space-y-4">
+            </div>
+
+        <div id="emptyState" class="text-center py-12">
+            <div class="w-20 h-20 bg-slate-200/50 rounded-full flex items-center justify-center mx-auto mb-4 border-4 border-white shadow-inner">
+                <i data-lucide="package" class="w-8 h-8 text-slate-300"></i>
+            </div>
+            <p class="text-sm font-bold text-slate-400">Belum ada data barang.</p>
+        </div>
     </main>
 
-    <button onclick="openModal()" class="fixed bottom-6 right-6 flex items-center gap-2 px-6 py-4 bg-slate-900 text-white rounded-full shadow-2xl hover:bg-black transition-all active:scale-90 font-bold z-40">
-        <i data-lucide="plus" class="w-6 h-6"></i>
-        <span>Tambah</span>
-    </button>
+    <div class="fixed bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-slate-100 to-transparent pointer-events-none z-40">
+        <div class="max-w-md mx-auto flex justify-center pointer-events-auto">
+            <button onclick="openModal()" class="flex items-center gap-3 px-8 py-4 bg-slate-900 text-white rounded-2xl shadow-2xl shadow-slate-400 active:scale-90 transition-all font-bold">
+                <i data-lucide="plus" class="w-6 h-6 text-blue-400"></i>
+                <span>Tambah Produk</span>
+            </button>
+        </div>
+    </div>
 
-    <div id="modal" class="hidden fixed inset-0 z-50 flex items-end lg:items-center justify-center">
+    <div id="modal" class="hidden fixed inset-0 z-50 flex items-end">
         <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onclick="closeModal()"></div>
-        <div class="bg-white w-full lg:max-w-2xl rounded-t-3xl lg:rounded-2xl shadow-2xl z-50 p-6 max-h-[90vh] overflow-y-auto">
+        <div class="bg-white w-full rounded-t-[40px] shadow-2xl z-50 p-8 max-h-[95vh] overflow-y-auto animate-slide-up border-t border-slate-100">
+            <div class="w-12 h-1.5 bg-slate-200 rounded-full mx-auto mb-8"></div>
+            
             <div class="flex justify-between items-center mb-6">
-                <h2 id="modalTitle" class="text-xl font-bold">Tambah Produk</h2>
-                <button onclick="closeModal()" class="p-2 bg-slate-100 rounded-full"><i data-lucide="x" class="w-5 h-5"></i></button>
+                <h2 id="modalTitle" class="text-2xl font-bold">Input Produk</h2>
+                <button onclick="closeModal()" class="p-2 bg-slate-50 rounded-full text-slate-400"><i data-lucide="x" class="w-6 h-6"></i></button>
             </div>
 
-            <form id="prodForm" class="space-y-4 pb-10 lg:pb-0">
+            <form id="prodForm" class="space-y-6 pb-12">
                 <input type="hidden" id="editId">
                 
-                <div class="grid grid-cols-2 gap-3">
-                    <div class="col-span-2 lg:col-span-1">
-                        <label class="label-proper">Nama Produk</label>
-                        <input type="text" id="namaProduk" required class="input-proper">
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="col-span-2">
+                        <label class="label-mobile">Nama Produk</label>
+                        <input type="text" id="namaProduk" required placeholder="Contoh: Urea G1">
                     </div>
-                    <div class="col-span-2 lg:col-span-1">
-                        <label class="label-proper">Versi</label>
-                        <input type="text" id="versi" required class="input-proper">
+                    <div>
+                        <label class="label-mobile">Versi</label>
+                        <input type="text" id="versi" required placeholder="v.01">
+                    </div>
+                    <div>
+                        <label class="label-mobile">Kavling</label>
+                        <input type="text" id="kavlingTujuan" required placeholder="KAV-01">
                     </div>
                 </div>
 
-                <div class="grid grid-cols-2 gap-3">
+                <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="label-proper">Line Bagging</label>
-                        <input type="text" id="lineBagging" required class="input-proper">
-                    </div>
-                    <div>
-                        <label class="label-proper">Kavling Tujuan</label>
-                        <input type="text" id="kavlingTujuan" required class="input-proper">
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-2 gap-3 p-3 bg-blue-50 rounded-xl border border-blue-100">
-                    <div class="col-span-2 text-[10px] font-bold text-blue-600 uppercase mb-1">Rentang Nomor Label</div>
-                    <div>
-                        <label class="label-proper">Dari</label>
-                        <input type="text" id="labelDari" required class="input-proper border-blue-200">
-                    </div>
-                    <div>
-                        <label class="label-proper">Sampai</label>
-                        <input type="text" id="labelSampai" required class="input-proper border-blue-200">
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
-                    <div>
-                        <label class="label-proper">Jml Batch</label>
-                        <input type="number" id="jmlBatch" required class="input-proper">
-                    </div>
-                    <div>
-                        <label class="label-proper">Jml Karung</label>
-                        <input type="number" id="jmlKarung" required class="input-proper">
-                    </div>
-                    <div>
-                        <label class="label-proper">Tap (Kg)</label>
-                        <input type="number" step="0.01" id="jmlTap" required class="input-proper">
-                    </div>
-                    <div>
-                        <label class="label-proper">Sweep (Kg)</label>
-                        <input type="number" step="0.01" id="jmlSweeping" required class="input-proper">
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="label-proper">Karung Robek</label>
-                        <input type="number" id="jmlRobek" required class="input-proper">
+                        <label class="label-mobile">Line Bagging</label>
+                        <input type="text" id="lineBagging" required placeholder="Line A">
                     </div>
                     <div class="flex gap-2">
                         <div class="w-full">
-                            <label class="label-proper">Jam Mulai</label>
-                            <input type="time" id="jamAwal" required class="input-proper">
+                            <label class="label-mobile">Jam Mulai</label>
+                            <input type="time" id="jamAwal" required class="!p-2 !text-center">
                         </div>
                         <div class="w-full">
-                            <label class="label-proper">Selesai</label>
-                            <input type="time" id="jamAkhir" required class="input-proper">
+                            <label class="label-mobile">Selesai</label>
+                            <input type="time" id="jamAkhir" required class="!p-2 !text-center">
                         </div>
                     </div>
                 </div>
 
-                <button type="submit" class="w-full bg-blue-600 text-white py-4 rounded-xl font-bold shadow-lg flex items-center justify-center gap-2 active:scale-95 transition-all">
-                    <i data-lucide="check" class="w-5 h-5"></i> Simpan ke Daftar
+                <div class="p-5 bg-slate-50 rounded-3xl border border-slate-100 space-y-4">
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest text-center">Nomor Seri Label</p>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="label-mobile text-blue-600">Dari No.</label>
+                            <input type="text" id="labelDari" required placeholder="0001">
+                        </div>
+                        <div>
+                            <label class="label-mobile text-blue-600">Hingga No.</label>
+                            <input type="text" id="labelSampai" required placeholder="0500">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="label-mobile">Jumlah Batch</label>
+                        <input type="number" id="jmlBatch" required>
+                    </div>
+                    <div>
+                        <label class="label-mobile text-blue-600">Total Karung</label>
+                        <input type="number" id="jmlKarung" required>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-3 gap-3">
+                    <div>
+                        <label class="label-mobile text-red-500">Robek</label>
+                        <input type="number" id="jmlRobek" required>
+                    </div>
+                    <div>
+                        <label class="label-mobile">Tap (Kg)</label>
+                        <input type="number" step="0.01" id="jmlTap" required>
+                    </div>
+                    <div>
+                        <label class="label-mobile">Sweep (Kg)</label>
+                        <input type="number" step="0.01" id="jmlSweeping" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full bg-blue-600 text-white py-5 rounded-2xl font-bold shadow-xl shadow-blue-100 active:scale-95 transition-all mt-4 flex items-center justify-center gap-3">
+                    <i data-lucide="save" class="w-5 h-5 text-blue-200"></i>
+                    <span>Simpan Baris Ini</span>
                 </button>
             </form>
         </div>
@@ -197,7 +203,7 @@
     <script>
         lucide.createIcons();
         const scriptURL = 'URL_APPS_SCRIPT_ANDA';
-        let localData = JSON.parse(localStorage.getItem('prod_v5')) || [];
+        let localData = JSON.parse(localStorage.getItem('prod_v_final')) || [];
 
         function openModal(editId = null) {
             document.getElementById('modal').classList.remove('hidden');
@@ -217,11 +223,11 @@
                 document.getElementById('jmlRobek').value = item.jmlRobek;
                 document.getElementById('jmlTap').value = item.jmlTap;
                 document.getElementById('jmlSweeping').value = item.jmlSweeping;
-                document.getElementById('modalTitle').innerText = "Edit Produk";
+                document.getElementById('modalTitle').innerText = "Edit Data";
             } else {
                 document.getElementById('prodForm').reset();
                 document.getElementById('editId').value = "";
-                document.getElementById('modalTitle').innerText = "Tambah Produk";
+                document.getElementById('modalTitle').innerText = "Input Baru";
             }
         }
 
@@ -250,77 +256,78 @@
             if(editId) { localData = localData.map(i => i.id === parseInt(editId) ? itemData : i); }
             else { localData.push(itemData); }
 
-            localStorage.setItem('prod_v5', JSON.stringify(localData));
+            localStorage.setItem('prod_v_final', JSON.stringify(localData));
             closeModal();
             render();
         });
 
         function render() {
-            const dBody = document.getElementById('desktopTableBody');
-            const mBody = document.getElementById('mobileCardsBody');
+            const listBody = document.getElementById('listBody');
             const emptyState = document.getElementById('emptyState');
-            dBody.innerHTML = '';
-            mBody.innerHTML = '';
+            const counter = document.getElementById('counterData');
+            listBody.innerHTML = '';
             
+            counter.innerText = `${localData.length} ITEM`;
             if(localData.length === 0) emptyState.classList.remove('hidden');
             else emptyState.classList.add('hidden');
 
             localData.forEach(item => {
-                // Render Desktop Table Row
-                const row = `
-                    <tr class="text-sm">
-                        <td class="px-4 py-4 font-bold text-slate-800">${item.namaProduk}<br><span class="text-[10px] text-slate-400 uppercase">${item.versi}</span></td>
-                        <td class="px-4 py-4 text-xs">${item.lineBagging}<br><span class="text-blue-600 font-bold uppercase">${item.kavlingTujuan}</span></td>
-                        <td class="px-4 py-4 text-center font-semibold">${item.jmlBatch}</td>
-                        <td class="px-4 py-4 text-center font-bold text-blue-700">${item.jmlKarung}</td>
-                        <td class="px-4 py-4 text-center text-red-500">${item.jmlRobek}</td>
-                        <td class="px-4 py-4 text-center">${item.jmlTap}</td>
-                        <td class="px-4 py-4 text-center">${item.jmlSweeping}</td>
-                        <td class="px-4 py-4 text-[10px] font-mono text-slate-400">${item.labelDari} → ${item.labelSampai}</td>
-                        <td class="px-4 py-4 text-right">
-                            <div class="flex gap-2 justify-end">
-                                <button onclick="openModal(${item.id})" class="p-2 text-slate-400 hover:text-blue-600"><i data-lucide="edit-2" class="w-4 h-4"></i></button>
-                                <button onclick="removeItem(${item.id})" class="p-2 text-slate-400 hover:text-red-500"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
-                            </div>
-                        </td>
-                    </tr>
-                `;
-                dBody.insertAdjacentHTML('beforeend', row);
-
-                // Render Mobile Card
                 const card = `
-                    <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm relative">
-                        <div class="flex justify-between items-start mb-3">
+                    <div class="bg-white rounded-[32px] p-6 shadow-sm border border-slate-100 flex flex-col gap-4">
+                        <div class="flex justify-between items-start">
                             <div>
-                                <h3 class="font-bold text-slate-800">${item.namaProduk}</h3>
-                                <span class="text-[10px] px-2 py-0.5 bg-slate-100 rounded-full font-bold text-slate-500">${item.versi}</span>
+                                <h4 class="font-bold text-lg text-slate-800 leading-none mb-1">${item.namaProduk}</h4>
+                                <div class="flex gap-2">
+                                    <span class="text-[9px] font-bold px-2 py-0.5 bg-blue-50 text-blue-600 rounded-full uppercase tracking-tighter">${item.versi}</span>
+                                    <span class="text-[9px] font-bold px-2 py-0.5 bg-slate-100 text-slate-500 rounded-full uppercase tracking-tighter">${item.lineBagging}</span>
+                                </div>
                             </div>
-                            <div class="flex gap-1">
-                                <button onclick="openModal(${item.id})" class="p-2 bg-slate-50 rounded-lg text-slate-400"><i data-lucide="edit-2" class="w-4 h-4"></i></button>
-                                <button onclick="removeItem(${item.id})" class="p-2 bg-slate-50 rounded-lg text-red-400"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                            <div class="flex gap-2">
+                                <button onclick="openModal(${item.id})" class="p-3 bg-slate-50 rounded-2xl text-slate-400 active:bg-blue-50 active:text-blue-600 transition-all"><i data-lucide="edit-2" class="w-4 h-4"></i></button>
+                                <button onclick="removeItem(${item.id})" class="p-3 bg-slate-50 rounded-2xl text-slate-400 active:bg-red-50 active:text-red-600 transition-all"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
                             </div>
                         </div>
-                        <div class="grid grid-cols-3 gap-4 border-t border-slate-50 pt-3">
-                            <div><p class="text-[9px] text-slate-400 font-bold uppercase">Karung</p><p class="text-sm font-bold text-blue-700">${item.jmlKarung}</p></div>
-                            <div><p class="text-[9px] text-slate-400 font-bold uppercase">Robek</p><p class="text-sm font-bold text-red-500">${item.jmlRobek}</p></div>
-                            <div><p class="text-[9px] text-slate-400 font-bold uppercase">Batch</p><p class="text-sm font-bold">${item.jmlBatch}</p></div>
+
+                        <div class="grid grid-cols-3 gap-2 bg-slate-50 rounded-2xl p-4">
+                            <div class="text-center">
+                                <p class="text-[8px] font-bold text-slate-400 uppercase mb-1">Karung</p>
+                                <p class="text-sm font-bold text-blue-600">${item.jmlKarung}</p>
+                            </div>
+                            <div class="text-center border-x border-slate-200 px-1">
+                                <p class="text-[8px] font-bold text-slate-400 uppercase mb-1">Robek</p>
+                                <p class="text-sm font-bold text-red-500">${item.jmlRobek}</p>
+                            </div>
+                            <div class="text-center">
+                                <p class="text-[8px] font-bold text-slate-400 uppercase mb-1">Batch</p>
+                                <p class="text-sm font-bold text-slate-700">${item.jmlBatch}</p>
+                            </div>
                         </div>
-                        <div class="flex justify-between mt-3 text-[10px] bg-slate-50 p-2 rounded-lg font-medium text-slate-500 uppercase tracking-tighter">
-                            <span>Line: ${item.lineBagging}</span>
-                            <span>Kav: ${item.kavlingTujuan}</span>
-                            <span>${item.jamAwal}-${item.jamAkhir}</span>
+
+                        <div class="flex justify-between items-center text-[10px] font-bold">
+                            <div class="flex items-center gap-1 text-slate-400">
+                                <i data-lucide="map-pin" class="w-3 h-3 text-blue-500"></i>
+                                <span>${item.kavlingTujuan}</span>
+                            </div>
+                            <div class="flex items-center gap-1 text-slate-400">
+                                <i data-lucide="clock" class="w-3 h-3"></i>
+                                <span>${item.jamAwal} - ${item.jamAkhir}</span>
+                            </div>
+                            <div class="flex items-center gap-1 text-slate-500 bg-slate-100 px-2 py-1 rounded-lg">
+                                <i data-lucide="tag" class="w-3 h-3"></i>
+                                <span>${item.labelDari}...</span>
+                            </div>
                         </div>
                     </div>
                 `;
-                mBody.insertAdjacentHTML('beforeend', card);
+                listBody.insertAdjacentHTML('beforeend', card);
             });
             lucide.createIcons();
         }
 
         function removeItem(id) {
-            if(confirm("Hapus data ini?")) {
+            if(confirm("Hapus baris ini?")) {
                 localData = localData.filter(i => i.id !== id);
-                localStorage.setItem('prod_v5', JSON.stringify(localData));
+                localStorage.setItem('prod_v_final', JSON.stringify(localData));
                 render();
             }
         }
@@ -329,8 +336,9 @@
             const tanggal = document.getElementById('globalTanggal').value;
             const shift = document.getElementById('globalShift').value;
             const jamKerja = `${document.getElementById('globalJamAwal').value}-${document.getElementById('globalJamAkhir').value}`;
-            if(!tanggal || !shift) return alert("Lengkapi Tanggal/Shift!");
-            if(localData.length === 0) return alert("Belum ada data.");
+            
+            if(!tanggal || !shift) return alert("Isi Tanggal & Shift!");
+            if(localData.length === 0) return alert("Data kosong.");
 
             const btn = document.getElementById('btnKirim');
             btn.disabled = true;
@@ -342,14 +350,15 @@
                     const finalData = { ...item, tanggal, shift, jamKerja };
                     await fetch(scriptURL, { method: 'POST', body: JSON.stringify(finalData) });
                 }
-                alert("Berhasil!");
+                alert("Berhasil Terkirim!");
                 localData = [];
-                localStorage.removeItem('prod_v5');
+                localStorage.removeItem('prod_v_final');
                 render();
-            } catch (e) { alert("Gagal!"); }
-            finally {
+            } catch (e) {
+                alert("Koneksi Gagal.");
+            } finally {
                 btn.disabled = false;
-                btn.innerHTML = `<i data-lucide="cloud-upload" class="w-4 h-4"></i> Kirim`;
+                btn.innerHTML = `<i data-lucide="upload-cloud" class="w-4 h-4"></i> <span>Kirim</span>`;
                 lucide.createIcons();
             }
         }

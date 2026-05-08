@@ -2,188 +2,211 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ProFlow Elite</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>ProFlow Ultimate Edition</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
         
+        :root {
+            --primary: #2563eb;
+            --surface: #ffffff;
+            --bg: #f8fafc;
+        }
+
         body { 
             font-family: 'Plus Jakarta Sans', sans-serif; 
-            background-color: #fcfdfe;
+            background-color: var(--bg);
             color: #0f172a;
-            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
         }
 
-        /* --- ANIMATIONS --- */
-        @keyframes slideInUp {
-            from { transform: translateY(20px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
+        /* --- ADVANCED ANIMATIONS --- */
+        @keyframes reveal {
+            from { opacity: 0; transform: scale(0.95) translateY(10px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
         }
 
-        @keyframes pulseSoft {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.02); }
+        .animate-reveal { animation: reveal 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+
+        /* --- ULTIMATE INPUTS --- */
+        .input-group-focus {
+            @apply transition-all duration-300 border-slate-200 focus-within:border-blue-500 focus-within:ring-4 focus-within:ring-blue-500/10;
         }
 
-        .animate-list { animation: slideInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) both; }
-        
-        /* --- PROPER INPUTS --- */
-        .input-elite {
-            @apply w-full h-14 px-5 bg-slate-50 border border-slate-200 rounded-2xl outline-none transition-all duration-300;
-            @apply text-[15px] font-semibold text-slate-700 shadow-sm;
+        .input-ultimate {
+            @apply w-full h-14 px-5 bg-slate-50/50 rounded-2xl outline-none transition-all text-[15px] font-bold text-slate-700;
         }
 
-        .input-elite:focus {
-            @apply border-blue-500 bg-white ring-4 ring-blue-500/10 shadow-lg;
-            transform: translateY(-1px);
+        .input-ultimate:focus { @apply bg-white; }
+
+        /* --- BUTTONS: THE FINALE --- */
+        .btn-core {
+            @apply relative flex items-center justify-center gap-3 h-14 rounded-[22px] font-black text-[13px] tracking-widest transition-all duration-500 active:scale-90 overflow-hidden;
         }
 
-        /* --- BUTTON POLISHING --- */
-        .btn-premium {
-            @apply relative flex items-center justify-center gap-3 h-14 px-8 rounded-2xl font-extrabold text-sm tracking-wide transition-all duration-300 active:scale-95;
-            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+        .btn-primary { @apply bg-slate-900 text-white shadow-2xl shadow-slate-900/20; }
+        .btn-primary::after {
+            content: ''; @apply absolute inset-0 bg-gradient-to-tr from-white/5 to-transparent opacity-0 transition-opacity;
+        }
+        .btn-primary:active::after { @apply opacity-100; }
+
+        /* --- CARD STYLING --- */
+        .card-pro {
+            @apply bg-white border border-slate-100 rounded-[36px] p-6 shadow-[0_20px_50px_rgba(0,0,0,0.04)] relative;
         }
 
-        .btn-blue {
-            @apply bg-blue-600 text-white shadow-blue-500/30;
-        }
-        .btn-blue:hover { @apply bg-blue-700 shadow-blue-500/40; }
-
-        .btn-dark {
-            @apply bg-slate-900 text-white shadow-slate-900/20;
-        }
-
-        .icon-circle {
-            @apply flex items-center justify-center w-8 h-8 rounded-xl bg-white/20 backdrop-blur-sm;
-        }
-
-        /* --- POP UP ANIMATION --- */
-        #modal.hidden { display: none; }
-        #modal:not(.hidden) .modal-content {
-            animation: modalSlide 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-
-        @keyframes modalSlide {
-            from { transform: translateY(100%); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
+        /* Hide Scrollbar */
+        ::-webkit-scrollbar { display: none; }
     </style>
 </head>
-<body class="antialiased pb-36">
+<body class="antialiased pb-40">
 
-    <header class="bg-white/70 backdrop-blur-xl border-b border-slate-100 sticky top-0 z-40 px-6 py-4">
+    <header class="bg-white/80 backdrop-blur-2xl border-b border-slate-100 sticky top-0 z-50 px-6 py-5">
         <div class="max-w-xl mx-auto flex justify-between items-center">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-blue-600 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-200">
-                    <i data-lucide="activity" class="w-5 h-5 text-white"></i>
+            <div class="flex items-center gap-2">
+                <div class="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl flex items-center justify-center shadow-xl shadow-blue-500/20">
+                    <i data-lucide="box" class="w-5 h-5 text-white"></i>
                 </div>
-                <h1 class="text-xl font-black text-slate-900 tracking-tighter italic">ProFlow<span class="text-blue-600 font-black">.</span></h1>
+                <div class="flex flex-col">
+                    <span class="text-xl font-black tracking-tighter leading-none italic">ProFlow<span class="text-blue-600 font-black">.</span></span>
+                    <span class="text-[9px] font-black text-slate-400 tracking-[0.2em] uppercase">Enterprise</span>
+                </div>
             </div>
-            <button onclick="sendToBackend()" id="btnKirim" class="bg-emerald-500 text-white px-5 py-2.5 rounded-xl font-bold text-[10px] tracking-[0.1em] flex items-center gap-2 shadow-lg shadow-emerald-100 active:scale-90 transition-all uppercase">
-                SINKRON <i data-lucide="upload-cloud" class="w-4 h-4"></i>
+            <button onclick="sendToBackend()" id="btnKirim" class="bg-slate-900 text-white px-5 py-2.5 rounded-2xl font-bold text-[10px] tracking-widest flex items-center gap-2 shadow-xl active:scale-95 transition-all">
+                SINKRON <i data-lucide="refresh-cw" class="w-3 h-3"></i>
             </button>
         </div>
     </header>
 
-    <main class="max-w-xl mx-auto px-6 mt-8">
-        <div class="bg-white p-7 rounded-[32px] border border-slate-100 shadow-[0_15px_40px_rgba(0,0,0,0.02)] mb-8 space-y-6">
-            <div>
-                <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Tanggal Produksi</label>
-                <input type="date" id="globalTanggal" class="input-elite">
+    <main class="max-w-xl mx-auto px-6 mt-10">
+        <div class="card-pro mb-10 animate-reveal">
+            <div class="flex items-center gap-2 mb-6">
+                <span class="w-1.5 h-4 bg-blue-600 rounded-full"></span>
+                <h3 class="text-[11px] font-black text-slate-400 uppercase tracking-widest">Parameter Produksi</h3>
             </div>
-            <div class="grid grid-cols-2 gap-4">
-                <div class="grid grid-cols-1">
-                    <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Shift</label>
-                    <select id="globalShift" class="input-elite">
-                        <option value="1">Shift 01</option>
-                        <option value="2">Shift 02</option>
-                        <option value="3">Shift 03</option>
-                    </select>
+            <div class="space-y-6">
+                <div class="group">
+                    <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2 ml-1">Tanggal</label>
+                    <input type="date" id="globalTanggal" class="input-ultimate border border-slate-100 group-focus-within:border-blue-500">
                 </div>
-                <div class="grid grid-cols-1">
-                    <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Waktu</label>
-                    <div class="flex gap-2">
-                        <input type="time" id="globalJamAwal" class="input-elite !px-3">
-                        <input type="time" id="globalJamAkhir" class="input-elite !px-3">
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="group">
+                        <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2 ml-1">Shift</label>
+                        <select id="globalShift" class="input-ultimate border border-slate-100">
+                            <option value="1">Shift 01</option>
+                            <option value="2">Shift 02</option>
+                            <option value="3">Shift 03</option>
+                        </select>
+                    </div>
+                    <div class="group">
+                        <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2 ml-1">Rentang Waktu</label>
+                        <div class="flex gap-2 h-14">
+                            <input type="time" id="globalJamAwal" class="input-ultimate border border-slate-100 !px-2 text-center">
+                            <input type="time" id="globalJamAkhir" class="input-ultimate border border-slate-100 !px-2 text-center">
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div id="listBody" class="space-y-4"></div>
+        <div id="listBody" class="space-y-5"></div>
 
-        <div id="emptyState" class="hidden text-center py-24 bg-slate-50/50 rounded-[40px] border border-dashed border-slate-200">
-            <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm">
-                <i data-lucide="plus" class="text-slate-300 w-8 h-8"></i>
+        <div id="emptyState" class="hidden text-center py-20 bg-white/50 border-2 border-dashed border-slate-200 rounded-[40px]">
+            <div class="bg-white w-14 h-14 rounded-2xl shadow-sm flex items-center justify-center mx-auto mb-3">
+                <i data-lucide="layers-2" class="text-slate-300 w-6 h-6"></i>
             </div>
-            <p class="text-slate-400 font-bold text-[10px] uppercase tracking-widest">Belum ada rincian data</p>
+            <p class="text-slate-400 font-bold text-[10px] uppercase tracking-[0.2em]">Antrian data kosong</p>
         </div>
     </main>
 
-    <div class="fixed bottom-8 left-0 right-0 px-8 flex justify-center z-40">
-        <button onclick="openModal()" class="w-full max-w-md btn-premium btn-dark">
-            <div class="icon-circle text-blue-400">
+    <div class="fixed bottom-10 left-0 right-0 px-8 flex justify-center z-40">
+        <button onclick="openModal()" class="w-full max-w-md btn-core btn-primary">
+            <div class="flex items-center justify-center w-8 h-8 rounded-xl bg-blue-600 text-white shadow-lg">
                 <i data-lucide="plus" class="w-5 h-5"></i>
             </div>
-            <span>TAMBAH PRODUKSI</span>
+            <span>TAMBAH DATA PRODUKSI</span>
         </button>
     </div>
 
-    <div id="modal" class="hidden fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
-        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-md transition-opacity" onclick="closeModal()"></div>
+    <div id="modal" class="hidden fixed inset-0 z-[60] flex items-end sm:items-center justify-center p-0 sm:p-4 transition-all duration-500">
+        <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-xl opacity-0 transition-opacity duration-500" id="modalOverlay" onclick="closeModal()"></div>
         
-        <div class="modal-content bg-white w-full sm:max-w-lg rounded-t-[48px] sm:rounded-[40px] shadow-2xl z-50 overflow-hidden flex flex-col max-h-[96vh]">
-            <div class="w-12 h-1.5 bg-slate-100 rounded-full mx-auto mt-5 sm:hidden"></div>
+        <div class="bg-white w-full sm:max-w-lg rounded-t-[50px] sm:rounded-[44px] shadow-2xl z-[70] overflow-hidden flex flex-col max-h-[92vh] translate-y-full transition-transform duration-500" id="modalContent">
+            <div class="w-16 h-1.5 bg-slate-100 rounded-full mx-auto mt-6 mb-2 sm:hidden"></div>
             
-            <div class="p-8 pt-4 overflow-y-auto">
-                <div class="flex justify-between items-center mb-8 sticky top-0 bg-white py-2 z-10">
-                    <h2 id="modalTitle" class="text-2xl font-black text-slate-900 tracking-tight">Rincian Baru</h2>
-                    <button onclick="closeModal()" class="p-3 bg-slate-50 rounded-2xl text-slate-400 active:bg-red-50 active:text-red-500 transition-all"><i data-lucide="x" class="w-5 h-5"></i></button>
+            <div class="p-10 pt-4 overflow-y-auto">
+                <div class="flex justify-between items-center mb-10 sticky top-0 bg-white/90 backdrop-blur-md py-4 z-10">
+                    <div>
+                        <h2 id="modalTitle" class="text-2xl font-black text-slate-900 tracking-tight leading-none">Rincian Baru</h2>
+                        <span class="text-[9px] font-black text-blue-600 uppercase tracking-[0.3em]">Entry Form v4.0</span>
+                    </div>
+                    <button onclick="closeModal()" class="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-400 hover:text-red-500 transition-colors"><i data-lucide="x" class="w-6 h-6"></i></button>
                 </div>
 
-                <form id="prodForm" class="space-y-6">
+                <form id="prodForm" class="space-y-8">
                     <input type="hidden" id="editId">
                     
                     <div class="space-y-4">
-                        <input type="text" id="namaProduk" required placeholder="Nama Produk" class="input-elite">
+                        <div class="group">
+                            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 ml-1">Informasi Produk</label>
+                            <input type="text" id="namaProduk" required placeholder="Nama Produk" class="input-ultimate border border-slate-100 group-focus-within:border-blue-500">
+                        </div>
                         <div class="grid grid-cols-2 gap-4">
-                            <input type="text" id="versi" required placeholder="Versi" class="input-elite">
-                            <input type="text" id="kavlingTujuan" required placeholder="Kavling" class="input-elite">
+                            <input type="text" id="versi" required placeholder="Versi" class="input-ultimate border border-slate-100">
+                            <input type="text" id="kavlingTujuan" required placeholder="Kavling" class="input-ultimate border border-slate-100">
                         </div>
                     </div>
 
                     <div class="grid grid-cols-2 gap-4">
-                        <input type="text" id="lineBagging" required placeholder="Line Bagging" class="input-elite">
-                        <div class="flex gap-2">
-                            <input type="time" id="jamAwal" required class="input-elite !px-2">
-                            <input type="time" id="jamAkhir" required class="input-elite !px-2">
+                        <div class="group">
+                            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 ml-1">Bagging & Jam</label>
+                            <input type="text" id="lineBagging" required placeholder="Line" class="input-ultimate border border-slate-100">
+                        </div>
+                        <div class="flex gap-2 self-end h-14">
+                            <input type="time" id="jamAwal" required class="input-ultimate border border-slate-100 !px-2">
+                            <input type="time" id="jamAkhir" required class="input-ultimate border border-slate-100 !px-2">
                         </div>
                     </div>
 
-                    <div class="p-6 bg-blue-50/50 rounded-[30px] border border-blue-100/50">
-                        <label class="block text-[10px] font-black text-blue-600 uppercase tracking-widest mb-4 text-center">Nomor Seri Label</label>
-                        <div class="grid grid-cols-2 gap-4">
-                            <input type="text" id="labelDari" placeholder="Dari" required class="input-elite !bg-white">
-                            <input type="text" id="labelSampai" placeholder="Sampai" required class="input-elite !bg-white">
+                    <div class="p-8 bg-blue-50/30 border border-blue-100/50 rounded-[40px] relative overflow-hidden">
+                        <div class="absolute top-0 right-0 p-4 opacity-10"><i data-lucide="hash" class="w-20 h-20"></i></div>
+                        <label class="block text-[10px] font-black text-blue-600 uppercase tracking-widest mb-5 text-center">Nomor Seri Label</label>
+                        <div class="grid grid-cols-2 gap-4 relative z-10">
+                            <input type="text" id="labelDari" placeholder="Awal" required class="input-ultimate !bg-white shadow-sm border-blue-100">
+                            <input type="text" id="labelSampai" placeholder="Akhir" required class="input-ultimate !bg-white shadow-sm border-blue-100">
                         </div>
                     </div>
 
                     <div class="grid grid-cols-2 gap-4">
-                        <input type="number" id="jmlBatch" required placeholder="Jumlah Batch" class="input-elite">
-                        <input type="number" id="jmlKarung" required placeholder="Total Karung" class="input-elite border-blue-200 !text-blue-600">
+                        <div class="group">
+                            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 ml-1">Kuantitas</label>
+                            <input type="number" id="jmlBatch" required placeholder="Batch" class="input-ultimate border border-slate-100">
+                        </div>
+                        <div class="group self-end h-14">
+                            <input type="number" id="jmlKarung" required placeholder="Total Karung" class="input-ultimate border-2 border-blue-100 !bg-blue-50/20 !text-blue-600">
+                        </div>
                     </div>
 
                     <div class="grid grid-cols-3 gap-3">
-                        <input type="number" id="jmlRobek" required placeholder="Robek" class="input-elite border-red-100 !h-12 !text-red-500">
-                        <input type="number" step="0.01" id="jmlTap" required placeholder="Tap" class="input-elite !h-12">
-                        <input type="number" step="0.01" id="jmlSweeping" required placeholder="Sweep" class="input-elite !h-12">
+                        <div class="group">
+                            <label class="block text-[9px] font-bold text-red-400 uppercase text-center mb-1">Robek</label>
+                            <input type="number" id="jmlRobek" required class="input-ultimate !h-12 border-red-50 !bg-red-50/20 !text-red-500">
+                        </div>
+                        <div class="group">
+                            <label class="block text-[9px] font-bold text-slate-400 uppercase text-center mb-1">Tap</label>
+                            <input type="number" step="0.01" id="jmlTap" required class="input-ultimate !h-12 border-slate-100">
+                        </div>
+                        <div class="group">
+                            <label class="block text-[9px] font-bold text-slate-400 uppercase text-center mb-1">Sweep</label>
+                            <input type="number" step="0.01" id="jmlSweeping" required class="input-ultimate !h-12 border-slate-100">
+                        </div>
                     </div>
 
-                    <button type="submit" class="w-full btn-premium btn-blue mt-4 shadow-xl">
-                        <div class="icon-circle"><i data-lucide="check" class="w-5 h-5"></i></div>
-                        <span>SIMPAN RINCIAN</span>
+                    <button type="submit" class="w-full btn-core bg-blue-600 text-white shadow-2xl shadow-blue-200 mt-4">
+                        <i data-lucide="save" class="w-5 h-5"></i>
+                        <span>SIMPAN DATA RINCIAN</span>
                     </button>
                 </form>
             </div>
@@ -193,10 +216,19 @@
     <script>
         lucide.createIcons();
         const scriptURL = 'URL_APPS_SCRIPT_ANDA';
-        let localData = JSON.parse(localStorage.getItem('prod_elite_v4')) || [];
+        let localData = JSON.parse(localStorage.getItem('prod_ultimate_v5')) || [];
 
         function openModal(editId = null) {
-            document.getElementById('modal').classList.remove('hidden');
+            const modal = document.getElementById('modal');
+            const overlay = document.getElementById('modalOverlay');
+            const content = document.getElementById('modalContent');
+            
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                overlay.classList.add('opacity-100');
+                content.classList.remove('translate-y-full');
+            }, 10);
+
             if(editId) {
                 const item = localData.find(i => i.id === editId);
                 document.getElementById('editId').value = item.id;
@@ -213,7 +245,7 @@
                 document.getElementById('jmlRobek').value = item.jmlRobek;
                 document.getElementById('jmlTap').value = item.jmlTap;
                 document.getElementById('jmlSweeping').value = item.jmlSweeping;
-                document.getElementById('modalTitle').innerText = "Edit Data";
+                document.getElementById('modalTitle').innerText = "Update Detail";
             } else {
                 document.getElementById('prodForm').reset();
                 document.getElementById('editId').value = "";
@@ -221,7 +253,16 @@
             }
         }
 
-        function closeModal() { document.getElementById('modal').classList.add('hidden'); }
+        function closeModal() {
+            const overlay = document.getElementById('modalOverlay');
+            const content = document.getElementById('modalContent');
+            
+            overlay.classList.remove('opacity-100');
+            content.classList.add('translate-y-full');
+            setTimeout(() => {
+                document.getElementById('modal').classList.add('hidden');
+            }, 500);
+        }
 
         document.getElementById('prodForm').addEventListener('submit', function(e) {
             e.preventDefault();
@@ -246,7 +287,7 @@
             if(editId) localData = localData.map(i => i.id === parseInt(editId) ? itemData : i);
             else localData.push(itemData);
 
-            localStorage.setItem('prod_elite_v4', JSON.stringify(localData));
+            localStorage.setItem('prod_ultimate_v5', JSON.stringify(localData));
             closeModal();
             render();
         });
@@ -261,42 +302,48 @@
 
             localData.forEach((item, index) => {
                 const card = `
-                    <div class="animate-list bg-white rounded-[32px] p-6 border border-slate-100 shadow-sm relative group active:scale-[0.98] transition-all" style="animation-delay: ${index * 0.1}s">
-                        <div class="flex justify-between items-start mb-5">
+                    <div class="card-pro animate-reveal relative group active:scale-[0.98] transition-all" style="animation-delay: ${index * 0.1}s">
+                        <div class="flex justify-between items-start mb-6">
                             <div class="flex items-center gap-4">
-                                <div class="w-12 h-12 bg-slate-900 rounded-2xl flex items-center justify-center text-white shadow-xl">
-                                    <i data-lucide="package" class="w-6 h-6"></i>
+                                <div class="w-14 h-14 bg-slate-900 rounded-[20px] flex items-center justify-center text-white shadow-xl rotate-3 group-hover:rotate-0 transition-transform">
+                                    <i data-lucide="package-check" class="w-7 h-7"></i>
                                 </div>
                                 <div>
-                                    <h4 class="font-bold text-slate-800 text-lg tracking-tight">${item.namaProduk}</h4>
-                                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">${item.lineBagging} • ${item.versi}</p>
+                                    <h4 class="font-extrabold text-slate-800 text-lg leading-none">${item.namaProduk}</h4>
+                                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-2">${item.lineBagging} • ${item.versi}</p>
                                 </div>
                             </div>
-                            <div class="flex gap-2">
-                                <button onclick="openModal(${item.id})" class="p-3 bg-slate-50 rounded-2xl text-slate-400 hover:text-blue-600 transition-all"><i data-lucide="edit-3" class="w-4 h-4"></i></button>
-                                <button onclick="removeItem(${item.id})" class="p-3 bg-slate-50 rounded-2xl text-slate-400 hover:text-red-500 transition-all"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                            <div class="flex gap-1.5">
+                                <button onclick="openModal(${item.id})" class="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center text-slate-400 hover:text-blue-600 transition-all"><i data-lucide="edit-3" class="w-4 h-4"></i></button>
+                                <button onclick="removeItem(${item.id})" class="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center text-slate-400 hover:text-red-500 transition-all"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
                             </div>
                         </div>
 
-                        <div class="grid grid-cols-3 gap-3 mb-5">
-                            <div class="bg-blue-50/50 rounded-2xl p-3 text-center border border-blue-50">
+                        <div class="grid grid-cols-3 gap-3 mb-6">
+                            <div class="bg-blue-50/50 rounded-2xl p-4 text-center border border-blue-50 shadow-sm shadow-blue-500/5">
                                 <span class="block text-[8px] font-black text-blue-400 uppercase mb-1">Karung</span>
-                                <span class="text-base font-black text-blue-600">${item.jmlKarung}</span>
+                                <span class="text-lg font-black text-blue-600 leading-none">${item.jmlKarung}</span>
                             </div>
-                            <div class="bg-red-50/50 rounded-2xl p-3 text-center border border-red-50">
+                            <div class="bg-red-50/30 rounded-2xl p-4 text-center border border-red-50">
                                 <span class="block text-[8px] font-black text-red-400 uppercase mb-1">Robek</span>
-                                <span class="text-base font-black text-red-500">${item.jmlRobek}</span>
+                                <span class="text-lg font-black text-red-500 leading-none">${item.jmlRobek}</span>
                             </div>
-                            <div class="bg-slate-50 rounded-2xl p-3 text-center border border-slate-100">
+                            <div class="bg-slate-50/50 rounded-2xl p-4 text-center border border-slate-100">
                                 <span class="block text-[8px] font-black text-slate-400 uppercase mb-1">Batch</span>
-                                <span class="text-base font-black text-slate-800">${item.jmlBatch}</span>
+                                <span class="text-lg font-black text-slate-800 leading-none">${item.jmlBatch}</span>
                             </div>
                         </div>
 
-                        <div class="flex justify-between items-center bg-slate-900 rounded-2xl p-4 text-white">
-                            <div class="flex items-center gap-1.5 text-[10px] font-bold"><i data-lucide="map-pin" class="w-4 h-4 text-blue-400"></i> ${item.kavlingTujuan}</div>
-                            <div class="flex items-center gap-1.5 text-[10px] font-bold"><i data-lucide="clock" class="w-4 h-4 text-blue-400"></i> ${item.jamAwal}</div>
-                            <div class="bg-white/10 px-3 py-1 rounded-lg text-[9px] font-mono tracking-tighter">${item.labelDari}..</div>
+                        <div class="flex justify-between items-center bg-slate-50 border border-slate-100 rounded-[22px] p-4">
+                            <div class="flex items-center gap-2 text-[11px] font-bold text-slate-500 tracking-tight">
+                                <i data-lucide="map-pin" class="w-4 h-4 text-blue-500"></i> ${item.kavlingTujuan}
+                            </div>
+                            <div class="flex items-center gap-2 text-[11px] font-bold text-slate-500 tracking-tight">
+                                <i data-lucide="clock" class="w-4 h-4 text-blue-500"></i> ${item.jamAwal}
+                            </div>
+                            <div class="bg-slate-900 text-white px-3 py-1 rounded-lg text-[10px] font-bold font-mono tracking-tighter">
+                                ${item.labelDari}..
+                            </div>
                         </div>
                     </div>
                 `;
@@ -306,9 +353,9 @@
         }
 
         function removeItem(id) {
-            if(confirm("Hapus data ini?")) {
+            if(confirm("Hapus data rincian?")) {
                 localData = localData.filter(i => i.id !== id);
-                localStorage.setItem('prod_elite_v4', JSON.stringify(localData));
+                localStorage.setItem('prod_ultimate_v5', JSON.stringify(localData));
                 render();
             }
         }
@@ -316,12 +363,13 @@
         async function sendToBackend() {
             const tgl = document.getElementById('globalTanggal').value;
             const shf = document.getElementById('globalShift').value;
-            if(!tgl) return alert("Pilih Tanggal!");
-            if(localData.length === 0) return alert("Belum ada data.");
+            if(!tgl) return alert("Metadata Tanggal diperlukan!");
+            if(localData.length === 0) return alert("Tidak ada data untuk disinkron.");
 
             const btn = document.getElementById('btnKirim');
+            const originalHTML = btn.innerHTML;
             btn.disabled = true;
-            btn.innerHTML = `<i data-lucide="loader-2" class="w-3 h-3 animate-spin"></i>`;
+            btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> SINKRON...`;
             lucide.createIcons();
             
             try {
@@ -329,14 +377,14 @@
                     const final = { ...item, tanggal: tgl, shift: shf };
                     await fetch(scriptURL, { method: 'POST', body: JSON.stringify(final) });
                 }
-                alert("Sinkron Berhasil!");
+                alert("Sinkronisasi Sukses!");
                 localData = [];
-                localStorage.removeItem('prod_elite_v4');
+                localStorage.removeItem('prod_ultimate_v5');
                 render();
-            } catch (e) { alert("Gagal."); }
+            } catch (e) { alert("Sinkronisasi gagal. Periksa koneksi."); }
             finally {
                 btn.disabled = false;
-                btn.innerHTML = `SINKRON <i data-lucide="upload-cloud" class="w-4 h-4"></i>`;
+                btn.innerHTML = originalHTML;
                 lucide.createIcons();
             }
         }

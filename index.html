@@ -3,143 +3,132 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Laporan Produksi Terpadu</title>
+    <title>Laporan Produksi Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap');
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; }
         
-        /* Input Styling */
-        .input-proper {
-            @apply w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm transition-all outline-none shadow-sm;
-        }
-        .input-proper:focus {
-            @apply border-blue-500 ring-4 ring-blue-50;
-        }
-        .label-proper {
-            @apply block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5 ml-1;
-        }
-        
-        /* Table Header Proper */
-        .th-proper {
-            @apply px-4 py-4 bg-slate-50 text-left text-[10px] font-bold text-slate-600 uppercase tracking-widest border-b border-slate-100;
-        }
-        
-        .glass-header {
-            backdrop-filter: blur(10px);
-            background: rgba(255, 255, 255, 0.9);
+        /* Mobile-First Table Hide/Show */
+        .desktop-table { display: none; }
+        @media (min-width: 1024px) {
+            .desktop-table { display: table; }
+            .mobile-cards { display: none; }
         }
 
-        /* Satuan Badge */
-        .unit-tag {
-            @apply text-[9px] font-bold bg-slate-100 text-slate-500 px-1.5 py-0.5 rounded ml-1;
+        /* Input Styling */
+        .input-proper {
+            @apply w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm transition-all outline-none;
+        }
+        .input-proper:focus {
+            @apply bg-white border-blue-500 ring-4 ring-blue-50;
+        }
+        .label-proper {
+            @apply block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5 ml-1;
         }
     </style>
 </head>
-<body class="antialiased text-slate-900 pb-24">
+<body class="antialiased text-slate-900 pb-28">
 
-    <header class="glass-header border-b sticky top-0 z-30 shadow-sm">
+    <header class="bg-white border-b sticky top-0 z-30 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 py-4">
-            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-                <div>
-                    <h1 class="text-xl font-bold flex items-center gap-2">
-                        <div class="p-2 bg-blue-600 rounded-lg text-white">
-                            <i data-lucide="bar-chart-3" class="w-5 h-5"></i>
-                        </div>
-                        Laporan Hasil Produksi
-                    </h1>
-                </div>
-                <button onclick="sendToBackend()" id="btnKirim" class="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 shadow-lg shadow-blue-200 transition-all font-bold active:scale-95">
-                    <i data-lucide="send" class="w-4 h-4"></i> Kirim Data
+            <div class="flex justify-between items-center mb-4">
+                <h1 class="text-lg font-bold flex items-center gap-2 text-slate-800">
+                    <div class="p-2 bg-blue-600 rounded-lg text-white">
+                        <i data-lucide="layout-grid" class="w-5 h-5"></i>
+                    </div>
+                    <span>Produksi <span class="text-blue-600">App</span></span>
+                </h1>
+                <button onclick="sendToBackend()" id="btnKirim" class="flex items-center gap-2 px-5 py-2.5 bg-green-600 text-white rounded-xl hover:bg-green-700 shadow-md transition-all font-bold text-sm active:scale-95">
+                    <i data-lucide="cloud-upload" class="w-4 h-4"></i> Kirim
                 </button>
             </div>
             
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
                 <div class="col-span-2 md:col-span-1">
-                    <label class="label-proper">Tanggal Produksi</label>
+                    <label class="label-proper">Tanggal</label>
                     <input type="date" id="globalTanggal" class="input-proper">
                 </div>
                 <div>
                     <label class="label-proper">Shift</label>
-                    <select id="globalShift" class="input-proper appearance-none bg-no-repeat bg-right pr-10">
-                        <option value="1">Shift 1</option>
-                        <option value="2">Shift 2</option>
-                        <option value="3">Shift 3</option>
+                    <select id="globalShift" class="input-proper">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
                     </select>
                 </div>
-                <div>
-                    <label class="label-proper">Jam Kerja Awal</label>
-                    <input type="time" id="globalJamAwal" class="input-proper">
-                </div>
-                <div>
-                    <label class="label-proper">Jam Kerja Akhir</label>
-                    <input type="time" id="globalJamAkhir" class="input-proper">
+                <div class="flex gap-2 col-span-1">
+                    <div class="w-full">
+                        <label class="label-proper">Jam Awal</label>
+                        <input type="time" id="globalJamAwal" class="input-proper">
+                    </div>
+                    <div class="w-full">
+                        <label class="label-proper">Akhir</label>
+                        <input type="time" id="globalJamAkhir" class="input-proper">
+                    </div>
                 </div>
             </div>
         </div>
     </header>
 
-    <main class="max-w-7xl mx-auto p-4 mt-4">
-        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-            <div class="overflow-x-auto">
-                <table class="min-w-[1600px] w-full divide-y divide-slate-200">
-                    <thead>
-                        <tr>
-                            <th class="th-proper">Detail Produk</th>
-                            <th class="th-proper">Line / Kavling</th>
-                            <th class="th-proper text-center">Operasional</th>
-                            <th class="th-proper text-center">Batch</th>
-                            <th class="th-proper text-center">Karung</th>
-                            <th class="th-proper text-center">Robek</th>
-                            <th class="th-proper text-center">Tap <span class="unit-tag">Kg</span></th>
-                            <th class="th-proper text-center">Sweeping <span class="unit-tag">Kg</span></th>
-                            <th class="th-proper text-left">Rentang Label</th>
-                            <th class="th-proper text-center">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody id="localTableBody" class="divide-y divide-slate-50 text-sm">
-                        </tbody>
-                </table>
-            </div>
-            <div id="emptyState" class="hidden text-center py-24">
-                <div class="bg-slate-50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <i data-lucide="package-plus" class="w-10 h-10 text-slate-300"></i>
-                </div>
-                <h3 class="text-slate-900 font-bold">Belum Ada Baris Data</h3>
-                <p class="text-slate-500 text-sm mt-1">Tekan tombol tambah di bawah untuk mulai menginput.</p>
-            </div>
+    <main class="max-w-7xl mx-auto p-4">
+        <div id="emptyState" class="hidden text-center py-16">
+            <i data-lucide="inbox" class="w-12 h-12 mx-auto text-slate-300 mb-2"></i>
+            <p class="text-slate-400 text-sm">Belum ada data di tabel.</p>
         </div>
+
+        <div class="hidden lg:block bg-white rounded-2xl border border-slate-200 overflow-hidden">
+            <table class="w-full desktop-table">
+                <thead class="bg-slate-50 border-b border-slate-200">
+                    <tr class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+                        <th class="px-4 py-4 text-left">Produk</th>
+                        <th class="px-4 py-4 text-left">Line/Kav</th>
+                        <th class="px-4 py-4 text-center">Batch</th>
+                        <th class="px-4 py-4 text-center">Karung</th>
+                        <th class="px-4 py-4 text-center">Robek</th>
+                        <th class="px-4 py-4 text-center">Tap(Kg)</th>
+                        <th class="px-4 py-4 text-center">Sweep(Kg)</th>
+                        <th class="px-4 py-4 text-left">Label</th>
+                        <th class="px-4 py-4 text-right">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="desktopTableBody" class="divide-y divide-slate-100"></tbody>
+            </table>
+        </div>
+
+        <div id="mobileCardsBody" class="mobile-cards grid grid-cols-1 gap-4 lg:hidden">
+            </div>
     </main>
 
-    <button onclick="openModal()" class="fixed bottom-8 right-8 flex items-center gap-3 px-7 py-4 bg-slate-900 text-white rounded-2xl shadow-2xl hover:bg-slate-800 transition-all active:scale-95 z-40 font-bold">
-        <i data-lucide="plus-circle" class="w-6 h-6 text-blue-400"></i>
-        <span>Tambah Produk</span>
+    <button onclick="openModal()" class="fixed bottom-6 right-6 flex items-center gap-2 px-6 py-4 bg-slate-900 text-white rounded-full shadow-2xl hover:bg-black transition-all active:scale-90 font-bold z-40">
+        <i data-lucide="plus" class="w-6 h-6"></i>
+        <span>Tambah</span>
     </button>
 
-    <div id="modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div id="modal" class="hidden fixed inset-0 z-50 flex items-end lg:items-center justify-center">
         <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onclick="closeModal()"></div>
-        <div class="bg-white w-full max-w-2xl rounded-3xl shadow-2xl z-50 p-7 overflow-y-auto max-h-[90vh]">
-            <div class="flex justify-between items-center mb-8 border-b border-slate-100 pb-4">
-                <h2 id="modalTitle" class="text-xl font-bold text-slate-800">Input Data Produk</h2>
-                <button onclick="closeModal()" class="p-2 hover:bg-slate-100 rounded-full transition-colors"><i data-lucide="x" class="w-5 h-5"></i></button>
+        <div class="bg-white w-full lg:max-w-2xl rounded-t-3xl lg:rounded-2xl shadow-2xl z-50 p-6 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-6">
+                <h2 id="modalTitle" class="text-xl font-bold">Tambah Produk</h2>
+                <button onclick="closeModal()" class="p-2 bg-slate-100 rounded-full"><i data-lucide="x" class="w-5 h-5"></i></button>
             </div>
 
-            <form id="prodForm" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <form id="prodForm" class="space-y-4 pb-10 lg:pb-0">
                 <input type="hidden" id="editId">
                 
-                <div class="md:col-span-2 grid grid-cols-2 gap-4">
-                    <div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="col-span-2 lg:col-span-1">
                         <label class="label-proper">Nama Produk</label>
-                        <input type="text" id="namaProduk" required class="input-proper" placeholder="Contoh: Pupuk NPK">
+                        <input type="text" id="namaProduk" required class="input-proper">
                     </div>
-                    <div>
-                        <label class="label-custom label-proper">Versi</label>
-                        <input type="text" id="versi" required class="input-proper" placeholder="v1.x">
+                    <div class="col-span-2 lg:col-span-1">
+                        <label class="label-proper">Versi</label>
+                        <input type="text" id="versi" required class="input-proper">
                     </div>
                 </div>
 
-                <div class="grid grid-cols-2 gap-4">
+                <div class="grid grid-cols-2 gap-3">
                     <div>
                         <label class="label-proper">Line Bagging</label>
                         <input type="text" id="lineBagging" required class="input-proper">
@@ -150,59 +139,57 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-2 gap-4">
+                <div class="grid grid-cols-2 gap-3 p-3 bg-blue-50 rounded-xl border border-blue-100">
+                    <div class="col-span-2 text-[10px] font-bold text-blue-600 uppercase mb-1">Rentang Nomor Label</div>
                     <div>
-                        <label class="label-proper">Jam Awal</label>
-                        <input type="time" id="jamAwal" required class="input-proper">
+                        <label class="label-proper">Dari</label>
+                        <input type="text" id="labelDari" required class="input-proper border-blue-200">
                     </div>
                     <div>
-                        <label class="label-proper">Jam Akhir</label>
-                        <input type="time" id="jamAkhir" required class="input-proper">
-                    </div>
-                </div>
-
-                <div class="md:col-span-2 grid grid-cols-2 gap-4 bg-slate-50 p-4 rounded-2xl border border-slate-100">
-                    <div>
-                        <label class="label-proper text-blue-600">Nomor Label (Dari)</label>
-                        <input type="text" id="labelDari" required class="input-proper" placeholder="A-001">
-                    </div>
-                    <div>
-                        <label class="label-proper text-blue-600">Nomor Label (Sampai)</label>
-                        <input type="text" id="labelSampai" required class="input-proper" placeholder="A-100">
+                        <label class="label-proper">Sampai</label>
+                        <input type="text" id="labelSampai" required class="input-proper border-blue-200">
                     </div>
                 </div>
 
-                <div class="grid grid-cols-2 gap-4">
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
                     <div>
-                        <label class="label-proper">Jumlah Batch</label>
+                        <label class="label-proper">Jml Batch</label>
                         <input type="number" id="jmlBatch" required class="input-proper">
                     </div>
                     <div>
-                        <label class="label-proper">Jumlah Karung</label>
+                        <label class="label-proper">Jml Karung</label>
                         <input type="number" id="jmlKarung" required class="input-proper">
                     </div>
-                </div>
-
-                <div class="grid grid-cols-3 gap-3 md:col-span-2">
                     <div>
-                        <label class="label-proper">Karung Robek</label>
-                        <input type="number" id="jmlRobek" required class="input-proper">
-                    </div>
-                    <div>
-                        <label class="label-proper">Tap <span class="text-[9px] text-slate-400">(Kg)</span></label>
+                        <label class="label-proper">Tap (Kg)</label>
                         <input type="number" step="0.01" id="jmlTap" required class="input-proper">
                     </div>
                     <div>
-                        <label class="label-proper">Sweeping <span class="text-[9px] text-slate-400">(Kg)</span></label>
+                        <label class="label-proper">Sweep (Kg)</label>
                         <input type="number" step="0.01" id="jmlSweeping" required class="input-proper">
                     </div>
                 </div>
 
-                <div class="md:col-span-2 pt-6">
-                    <button type="submit" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-bold shadow-xl hover:bg-black transition-all flex items-center justify-center gap-2 active:scale-95">
-                        <i data-lucide="plus-circle" class="w-5 h-5"></i> <span id="btnSaveLabel">Masukkan ke Tabel</span>
-                    </button>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="label-proper">Karung Robek</label>
+                        <input type="number" id="jmlRobek" required class="input-proper">
+                    </div>
+                    <div class="flex gap-2">
+                        <div class="w-full">
+                            <label class="label-proper">Jam Mulai</label>
+                            <input type="time" id="jamAwal" required class="input-proper">
+                        </div>
+                        <div class="w-full">
+                            <label class="label-proper">Selesai</label>
+                            <input type="time" id="jamAkhir" required class="input-proper">
+                        </div>
+                    </div>
                 </div>
+
+                <button type="submit" class="w-full bg-blue-600 text-white py-4 rounded-xl font-bold shadow-lg flex items-center justify-center gap-2 active:scale-95 transition-all">
+                    <i data-lucide="check" class="w-5 h-5"></i> Simpan ke Daftar
+                </button>
             </form>
         </div>
     </div>
@@ -210,7 +197,7 @@
     <script>
         lucide.createIcons();
         const scriptURL = 'URL_APPS_SCRIPT_ANDA';
-        let localData = JSON.parse(localStorage.getItem('prod_v4')) || [];
+        let localData = JSON.parse(localStorage.getItem('prod_v5')) || [];
 
         function openModal(editId = null) {
             document.getElementById('modal').classList.remove('hidden');
@@ -230,13 +217,11 @@
                 document.getElementById('jmlRobek').value = item.jmlRobek;
                 document.getElementById('jmlTap').value = item.jmlTap;
                 document.getElementById('jmlSweeping').value = item.jmlSweeping;
-                document.getElementById('modalTitle').innerText = "Edit Data Produk";
-                document.getElementById('btnSaveLabel').innerText = "Perbarui Baris";
+                document.getElementById('modalTitle').innerText = "Edit Produk";
             } else {
                 document.getElementById('prodForm').reset();
                 document.getElementById('editId').value = "";
-                document.getElementById('modalTitle').innerText = "Tambah Produk Baru";
-                document.getElementById('btnSaveLabel').innerText = "Masukkan ke Tabel";
+                document.getElementById('modalTitle').innerText = "Tambah Produk";
             }
         }
 
@@ -265,57 +250,77 @@
             if(editId) { localData = localData.map(i => i.id === parseInt(editId) ? itemData : i); }
             else { localData.push(itemData); }
 
-            localStorage.setItem('prod_v4', JSON.stringify(localData));
+            localStorage.setItem('prod_v5', JSON.stringify(localData));
             closeModal();
             render();
         });
 
         function render() {
-            const tbody = document.getElementById('localTableBody');
+            const dBody = document.getElementById('desktopTableBody');
+            const mBody = document.getElementById('mobileCardsBody');
             const emptyState = document.getElementById('emptyState');
-            tbody.innerHTML = '';
+            dBody.innerHTML = '';
+            mBody.innerHTML = '';
             
             if(localData.length === 0) emptyState.classList.remove('hidden');
             else emptyState.classList.add('hidden');
 
             localData.forEach(item => {
+                // Render Desktop Table Row
                 const row = `
-                    <tr class="hover:bg-slate-50 transition-colors group">
-                        <td class="px-4 py-4">
-                            <span class="font-bold text-slate-800">${item.namaProduk}</span>
-                            <div class="text-[10px] text-slate-400 font-bold uppercase tracking-tighter mt-0.5">${item.versi}</div>
-                        </td>
-                        <td class="px-4 py-4">
-                            <div class="text-xs font-semibold text-slate-600">${item.lineBagging}</div>
-                            <div class="text-[10px] text-blue-600 font-bold uppercase">${item.kavlingTujuan}</div>
-                        </td>
-                        <td class="px-4 py-4 text-center font-mono text-[11px] text-slate-500 bg-slate-50/50">${item.jamAwal} - ${item.jamAkhir}</td>
-                        <td class="px-4 py-4 text-center font-semibold text-slate-700">${item.jmlBatch}</td>
+                    <tr class="text-sm">
+                        <td class="px-4 py-4 font-bold text-slate-800">${item.namaProduk}<br><span class="text-[10px] text-slate-400 uppercase">${item.versi}</span></td>
+                        <td class="px-4 py-4 text-xs">${item.lineBagging}<br><span class="text-blue-600 font-bold uppercase">${item.kavlingTujuan}</span></td>
+                        <td class="px-4 py-4 text-center font-semibold">${item.jmlBatch}</td>
                         <td class="px-4 py-4 text-center font-bold text-blue-700">${item.jmlKarung}</td>
-                        <td class="px-4 py-4 text-center font-semibold text-red-500 bg-red-50/30">${item.jmlRobek}</td>
-                        <td class="px-4 py-4 text-center font-semibold text-slate-600">${item.jmlTap}</td>
-                        <td class="px-4 py-4 text-center font-semibold text-slate-600">${item.jmlSweeping}</td>
-                        <td class="px-4 py-4">
-                            <div class="text-[10px] font-bold text-slate-400 uppercase">Dari: <span class="text-slate-700">${item.labelDari}</span></div>
-                            <div class="text-[10px] font-bold text-slate-400 uppercase">Hingga: <span class="text-slate-700">${item.labelSampai}</span></div>
-                        </td>
-                        <td class="px-4 py-4 text-center">
-                            <div class="flex gap-1 justify-center">
-                                <button onclick="openModal(${item.id})" class="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all"><i data-lucide="edit-2" class="w-4 h-4"></i></button>
-                                <button onclick="removeItem(${item.id})" class="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                        <td class="px-4 py-4 text-center text-red-500">${item.jmlRobek}</td>
+                        <td class="px-4 py-4 text-center">${item.jmlTap}</td>
+                        <td class="px-4 py-4 text-center">${item.jmlSweeping}</td>
+                        <td class="px-4 py-4 text-[10px] font-mono text-slate-400">${item.labelDari} → ${item.labelSampai}</td>
+                        <td class="px-4 py-4 text-right">
+                            <div class="flex gap-2 justify-end">
+                                <button onclick="openModal(${item.id})" class="p-2 text-slate-400 hover:text-blue-600"><i data-lucide="edit-2" class="w-4 h-4"></i></button>
+                                <button onclick="removeItem(${item.id})" class="p-2 text-slate-400 hover:text-red-500"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
                             </div>
                         </td>
                     </tr>
                 `;
-                tbody.insertAdjacentHTML('beforeend', row);
+                dBody.insertAdjacentHTML('beforeend', row);
+
+                // Render Mobile Card
+                const card = `
+                    <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm relative">
+                        <div class="flex justify-between items-start mb-3">
+                            <div>
+                                <h3 class="font-bold text-slate-800">${item.namaProduk}</h3>
+                                <span class="text-[10px] px-2 py-0.5 bg-slate-100 rounded-full font-bold text-slate-500">${item.versi}</span>
+                            </div>
+                            <div class="flex gap-1">
+                                <button onclick="openModal(${item.id})" class="p-2 bg-slate-50 rounded-lg text-slate-400"><i data-lucide="edit-2" class="w-4 h-4"></i></button>
+                                <button onclick="removeItem(${item.id})" class="p-2 bg-slate-50 rounded-lg text-red-400"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-3 gap-4 border-t border-slate-50 pt-3">
+                            <div><p class="text-[9px] text-slate-400 font-bold uppercase">Karung</p><p class="text-sm font-bold text-blue-700">${item.jmlKarung}</p></div>
+                            <div><p class="text-[9px] text-slate-400 font-bold uppercase">Robek</p><p class="text-sm font-bold text-red-500">${item.jmlRobek}</p></div>
+                            <div><p class="text-[9px] text-slate-400 font-bold uppercase">Batch</p><p class="text-sm font-bold">${item.jmlBatch}</p></div>
+                        </div>
+                        <div class="flex justify-between mt-3 text-[10px] bg-slate-50 p-2 rounded-lg font-medium text-slate-500 uppercase tracking-tighter">
+                            <span>Line: ${item.lineBagging}</span>
+                            <span>Kav: ${item.kavlingTujuan}</span>
+                            <span>${item.jamAwal}-${item.jamAkhir}</span>
+                        </div>
+                    </div>
+                `;
+                mBody.insertAdjacentHTML('beforeend', card);
             });
             lucide.createIcons();
         }
 
         function removeItem(id) {
-            if(confirm("Hapus baris data ini?")) {
+            if(confirm("Hapus data ini?")) {
                 localData = localData.filter(i => i.id !== id);
-                localStorage.setItem('prod_v4', JSON.stringify(localData));
+                localStorage.setItem('prod_v5', JSON.stringify(localData));
                 render();
             }
         }
@@ -324,29 +329,27 @@
             const tanggal = document.getElementById('globalTanggal').value;
             const shift = document.getElementById('globalShift').value;
             const jamKerja = `${document.getElementById('globalJamAwal').value}-${document.getElementById('globalJamAkhir').value}`;
-
-            if(!tanggal || !shift) return alert("Isi Tanggal dan Shift terlebih dahulu!");
-            if(localData.length === 0) return alert("Belum ada data di tabel!");
+            if(!tanggal || !shift) return alert("Lengkapi Tanggal/Shift!");
+            if(localData.length === 0) return alert("Belum ada data.");
 
             const btn = document.getElementById('btnKirim');
             btn.disabled = true;
-            btn.innerHTML = `<i data-lucide="refresh-cw" class="w-4 h-4 animate-spin"></i> Memproses...`;
+            btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i>`;
             lucide.createIcons();
-
+            
             try {
                 for (const item of localData) {
                     const finalData = { ...item, tanggal, shift, jamKerja };
                     await fetch(scriptURL, { method: 'POST', body: JSON.stringify(finalData) });
                 }
-                alert(" Sinkronisasi Cloud Berhasil!");
+                alert("Berhasil!");
                 localData = [];
-                localStorage.removeItem('prod_v4');
+                localStorage.removeItem('prod_v5');
                 render();
-            } catch (e) {
-                alert("Koneksi gagal atau database sibuk.");
-            } finally {
+            } catch (e) { alert("Gagal!"); }
+            finally {
                 btn.disabled = false;
-                btn.innerHTML = `<i data-lucide="send" class="w-4 h-4"></i> Kirim Data`;
+                btn.innerHTML = `<i data-lucide="cloud-upload" class="w-4 h-4"></i> Kirim`;
                 lucide.createIcons();
             }
         }

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Laporan Hasil Produksi v33</title>
+    <title>Laporan Hasil Produksi v34</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
@@ -27,20 +27,22 @@
         table { width: 100%; border-collapse: collapse; font-size: 10.5px; table-layout: fixed; }
         th { background: #f8fafc; padding: 12px 10px; font-weight: 800; color: #64748b; border-bottom: 1px solid #f1f5f9; text-align: left; }
         td { padding: 16px 10px; border-bottom: 1px solid #f1f5f9; font-weight: 600; color: #475569; transition: 0.2s; cursor: pointer; }
-        tr:active td { background-color: #f1f5f9 !important; }
 
-        /* Pop-up Menus & Dialogs */
-        .action-menu-overlay, .dialog-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; z-index: 4000; padding: 20px; }
-        .action-menu, .dialog-box { background: white; width: 100%; max-width: 280px; border-radius: 24px; padding: 8px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); transform: scale(0.9); transition: 0.2s; }
-        .menu-open .action-menu { transform: scale(1); }
-        .action-menu button { width: 100%; padding: 16px; border: none; background: none; text-align: left; font-size: 13px; font-weight: 700; color: #475569; display: flex; align-items: center; gap: 12px; border-radius: 16px; }
-
-        /* Modal Sheet (Bottom) */
-        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.3); backdrop-filter: blur(8px); display: none; align-items: flex-end; z-index: 1000; }
-        .modal-sheet { background: white; width: 100%; border-radius: 35px 35px 0 0; padding: 30px 25px; max-height: 92vh; overflow-y: auto; transform: translateY(100%); transition: 0.3s; }
+        /* Modal Sheet Styles */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(8px); display: none; align-items: flex-end; z-index: 3000; }
+        .modal-sheet { 
+            background: white; width: 100%; border-radius: 35px 35px 0 0; 
+            padding: 15px 25px 40px 25px; max-height: 94vh; overflow-y: auto; 
+            transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1); 
+            position: relative; touch-action: none; /* gesture handled by JS */
+        }
         .modal-open .modal-sheet { transform: translateY(0); }
+        
+        /* Drag Handle */
+        .drag-handle { width: 40px; height: 5px; background: #e2e8f0; border-radius: 10px; margin: 0 auto 20px auto; cursor: grab; }
 
-        .full-table-overlay { position: fixed; inset: 0; background: white; z-index: 2000; display: none; flex-direction: column; padding: 20px; }
+        .action-menu-overlay, .dialog-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; z-index: 4000; padding: 20px; }
+        .action-menu, .dialog-box { background: white; width: 100%; max-width: 280px; border-radius: 24px; padding: 8px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
 
         #toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px); background: #1e293b; color: white; padding: 14px 24px; border-radius: 20px; font-size: 13px; font-weight: 700; transition: 0.5s; opacity: 0; z-index: 5000; }
         #toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
@@ -54,6 +56,74 @@
 <body>
 
     <div id="toast"><span id="toastMsg">Berhasil</span></div>
+
+    <!-- Modal Form / Detail View -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-sheet" id="modalSheet">
+            <div class="drag-handle"></div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:25px">
+                <h2 id="modalTitle" style="font-weight:800; font-size:1.1rem">Tambah Produk</h2>
+                <button onclick="closeModal('modalOverlay')" style="background:none; border:none; color:#cbd5e1"><i data-lucide="x-circle" size="30"></i></button>
+            </div>
+            <form id="prodForm">
+                <input type="hidden" id="editId">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px;">
+                    <div><span class="section-title">Produk</span><input type="text" id="namaProduk" required class="field"></div>
+                    <div><span class="section-title">Versi</span><input type="text" id="versi" required class="field"></div>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px;">
+                    <div><span class="section-title">Line</span>
+                        <select id="lineBagging" required class="field">
+                            <option value="Line 1">Line 1</option><option value="Line 2">Line 2</option>
+                            <option value="Line 3">Line 3</option><option value="Line 4">Line 4</option>
+                        </select>
+                    </div>
+                    <div><span class="section-title">Kavling</span><input type="text" id="kavling" required class="field"></div>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px;">
+                    <div><span class="section-title">Mulai</span><input type="time" id="jamAwal" required class="field"></div>
+                    <div><span class="section-title">Akhir</span><input type="time" id="jamAkhir" required class="field"></div>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px;">
+                    <div><span class="section-title">Label Mulai</span><input type="number" id="labelDari" required class="field" oninput="calcLabels()"></div>
+                    <div><span class="section-title">Label Selesai</span><input type="number" id="labelSampai" readonly class="field field-readonly"></div>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px;">
+                    <div><span class="section-title">Batch</span><input type="number" id="jmlBatch" required class="field"></div>
+                    <div><span class="section-title" style="color:#2563eb">Karung</span><input type="number" id="jmlKarung" required class="field" oninput="calcLabels()" style="background:#eff6ff"></div>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 30px;">
+                    <div><span class="section-title">Tap</span><input type="number" step="0.01" id="jmlTap" class="field" value="0"></div>
+                    <div><span class="section-title">Sweep</span><input type="number" step="0.01" id="jmlSweeping" class="field" value="0"></div>
+                    <div><span class="section-title" style="color:#ef4444">Robek</span><input type="number" id="jmlRobek" class="field" value="0"></div>
+                </div>
+                <button type="submit" id="submitBtn" style="width:100%; height:60px; background:#2563eb; color:white; border:none; border-radius:20px; font-weight:800;">SIMPAN PRODUK</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Full Table Modal (Sekarang bergaya Bottom Sheet) -->
+    <div class="modal-overlay" id="fullTableOverlay">
+        <div class="modal-sheet" id="fullTableSheet" style="max-height: 94vh;">
+            <div class="drag-handle"></div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px">
+                <h2 style="font-weight:800; font-size:1.1rem">Detail Semua Produk</h2>
+                <button onclick="closeModal('fullTableOverlay')" style="background:none; border:none; color:#cbd5e1"><i data-lucide="x-circle" size="30"></i></button>
+            </div>
+            <div style="overflow-x: auto; -webkit-overflow-scrolling: touch;">
+                <table style="min-width: 900px; font-size: 11px;">
+                    <thead>
+                        <tr style="background:#f8fafc">
+                            <th>Jam</th><th>Produk</th><th>Versi</th><th>Line</th><th>Kav</th><th>Label</th><th>Karung</th><th>Tap</th><th>Sweep</th><th>Robek</th>
+                        </tr>
+                    </thead>
+                    <tbody id="fullTableBody"></tbody>
+                    <tfoot id="fullTableFoot"></tfoot>
+                </table>
+            </div>
+            <div style="text-align:center; padding:15px; opacity:0.3; font-size:8px; font-weight:800; letter-spacing:1px">TARIK KE BAWAH UNTUK MENUTUP</div>
+        </div>
+    </div>
 
     <!-- Opsi Menu (Long Press) -->
     <div id="actionMenuOverlay" class="action-menu-overlay" onclick="closeActionMenu()">
@@ -100,7 +170,7 @@
         <div class="card" style="padding:15px;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px">
                 <span class="section-title" style="margin-bottom:0">Daftar Produk</span>
-                <button style="background:none; border:none; color:#2563eb" onclick="toggleFullTable(true)"><i data-lucide="maximize" size="18"></i></button>
+                <button style="background:none; border:none; color:#2563eb" onclick="openFullTable()"><i data-lucide="maximize" size="18"></i></button>
             </div>
             <div class="table-container">
                 <table>
@@ -115,76 +185,11 @@
                     <tbody id="tableBody"></tbody>
                 </table>
             </div>
-            <div style="text-align:center; padding:20px; opacity:0.3; font-size:8px; font-weight:800">TAP UNTUK DETAIL • TAHAN UNTUK OPSI</div>
         </div>
     </div>
 
     <div class="fab-container">
         <button class="btn-fab" onclick="openModal()"><i data-lucide="plus" size="32"></i></button>
-    </div>
-
-    <!-- Modal Form (Bisa untuk Input atau Detail View) -->
-    <div class="modal-overlay" id="modalOverlay">
-        <div class="modal-sheet" id="modalSheet">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:25px">
-                <h2 id="modalTitle" style="font-weight:800; font-size:1.1rem">Tambah Produk</h2>
-                <button onclick="closeModal()" style="background:none; border:none; color:#cbd5e1"><i data-lucide="x-circle" size="30"></i></button>
-            </div>
-            <form id="prodForm">
-                <input type="hidden" id="editId">
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px;">
-                    <div><span class="section-title">Produk</span><input type="text" id="namaProduk" required class="field"></div>
-                    <div><span class="section-title">Versi</span><input type="text" id="versi" required class="field" placeholder="V1"></div>
-                </div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px;">
-                    <div><span class="section-title">Line</span>
-                        <select id="lineBagging" required class="field">
-                            <option value="Line 1">Line 1</option><option value="Line 2">Line 2</option>
-                            <option value="Line 3">Line 3</option><option value="Line 4">Line 4</option>
-                        </select>
-                    </div>
-                    <div><span class="section-title">Kavling</span><input type="text" id="kavling" required class="field"></div>
-                </div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px;">
-                    <div><span class="section-title">Mulai</span><input type="time" id="jamAwal" required class="field"></div>
-                    <div><span class="section-title">Akhir</span><input type="time" id="jamAkhir" required class="field"></div>
-                </div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px;">
-                    <div><span class="section-title">Label Mulai</span><input type="number" id="labelDari" required class="field" oninput="calcLabels()"></div>
-                    <div><span class="section-title">Label Selesai</span><input type="number" id="labelSampai" readonly class="field field-readonly"></div>
-                </div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px;">
-                    <div><span class="section-title">Batch</span><input type="number" id="jmlBatch" required class="field"></div>
-                    <div><span class="section-title" style="color:#2563eb">Karung</span><input type="number" id="jmlKarung" required class="field" oninput="calcLabels()" style="background:#eff6ff"></div>
-                </div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 30px;">
-                    <div><span class="section-title">Tap</span><input type="number" step="0.01" id="jmlTap" class="field" value="0"></div>
-                    <div><span class="section-title">Sweep</span><input type="number" step="0.01" id="jmlSweeping" class="field" value="0"></div>
-                    <div><span class="section-title" style="color:#ef4444">Robek</span><input type="number" id="jmlRobek" class="field" value="0"></div>
-                </div>
-                <button type="submit" id="submitBtn" style="width:100%; height:60px; background:#2563eb; color:white; border:none; border-radius:20px; font-weight:800;">SIMPAN PRODUK</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- Full Table Overlay -->
-    <div id="fullTableOverlay" class="full-table-overlay">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:25px">
-            <h2 style="font-weight:800">Detail Semua Produk</h2>
-            <button onclick="toggleFullTable(false)" style="border:none; background:#f1f5f9; padding:12px; border-radius:15px"><i data-lucide="x" size="22"></i></button>
-        </div>
-        <div style="overflow-x: auto; flex-grow: 1;">
-            <table style="min-width: 1000px; font-size: 11px;">
-                <thead>
-                    <tr style="background:#f8fafc">
-                        <th>Jam</th><th>Produk</th><th>Versi</th><th>Line</th><th>Kav</th><th>Label</th><th>Karung</th><th>Tap</th><th>Sweep</th><th>Robek</th>
-                    </tr>
-                </thead>
-                <tbody id="fullTableBody"></tbody>
-                <tfoot id="fullTableFoot"></tfoot>
-            </table>
-        </div>
-        <div style="text-align:center; padding:10px; opacity:0.3; font-size:8px; font-weight:800">TAHAN BARIS UNTUK OPSI EDIT/HAPUS</div>
     </div>
 
     <script>
@@ -194,67 +199,48 @@
         let pressTimer = null;
         let isLongPress = false;
 
-        // Fungsi Delegasi untuk Gesture (bisa dipakai di tabel manapun)
-        function setupGestures(selector) {
-            const rows = document.querySelectorAll(selector);
-            rows.forEach(row => {
-                const id = row.getAttribute('data-id');
-                row.onmousedown = (e) => startPress(e, id);
-                row.onmouseup = () => endPress();
-                row.ontouchstart = (e) => startPress(e, id);
-                row.ontouchend = () => endPress();
-                
-                // Klik biasa di tabel utama buka detail view-only
-                if(selector === '#tableBody tr') {
-                    row.onclick = () => { if (!isLongPress) openModal(parseInt(id), true); };
+        // --- Gesture Drag to Dismiss ---
+        function initDragToDismiss(overlayId, sheetId) {
+            const overlay = document.getElementById(overlayId);
+            const sheet = document.getElementById(sheetId);
+            let startY = 0;
+            let currentY = 0;
+
+            sheet.addEventListener('touchstart', (e) => {
+                // Jangan drag jika sedang scroll konten di dalam (kecuali di bagian paling atas)
+                if (sheet.scrollTop > 0) return;
+                startY = e.touches[0].clientY;
+                sheet.style.transition = 'none';
+            }, { passive: true });
+
+            sheet.addEventListener('touchmove', (e) => {
+                if (sheet.scrollTop > 0) return;
+                currentY = e.touches[0].clientY - startY;
+                if (currentY > 0) {
+                    sheet.style.transform = `translateY(${currentY}px)`;
                 }
+            }, { passive: true });
+
+            sheet.addEventListener('touchend', () => {
+                sheet.style.transition = 'transform 0.3s cubic-bezier(0.16, 1, 0.3, 1)';
+                if (currentY > 150) {
+                    closeModal(overlayId);
+                } else {
+                    sheet.style.transform = 'translateY(0)';
+                }
+                currentY = 0;
             });
         }
 
-        function startPress(e, id) {
-            isLongPress = false;
-            clearTimeout(pressTimer);
-            pressTimer = setTimeout(() => {
-                isLongPress = true;
-                selectedId = parseInt(id);
-                openActionMenu();
-            }, 600);
-        }
-
-        function endPress() { clearTimeout(pressTimer); }
-
-        function openActionMenu() {
-            const menu = document.getElementById('actionMenuOverlay');
-            menu.style.display = 'flex';
-            setTimeout(() => menu.classList.add('menu-open'), 10);
-            if(window.navigator.vibrate) window.navigator.vibrate(40);
-        }
-
-        function closeActionMenu() {
-            const menu = document.getElementById('actionMenuOverlay');
-            menu.classList.remove('menu-open');
-            setTimeout(() => menu.style.display = 'none', 200);
-        }
-
-        function handleEditFromMenu() { 
-            closeActionMenu(); 
-            toggleFullTable(false); // Tutup full table jika sedang terbuka
-            openModal(selectedId, false); 
-        }
-
-        function handleDeleteFromMenu() { 
-            closeActionMenu(); 
-            openDeleteDialog(selectedId); 
-        }
-
         function openModal(id = null, isViewOnly = false) {
-            const modal = document.getElementById('modalOverlay');
+            const overlay = document.getElementById('modalOverlay');
+            const sheet = document.getElementById('modalSheet');
             const form = document.getElementById('prodForm');
             const submitBtn = document.getElementById('submitBtn');
             const title = document.getElementById('modalTitle');
             
-            modal.style.display = 'flex';
-            setTimeout(() => document.body.classList.add('modal-open'), 10);
+            overlay.style.display = 'flex';
+            setTimeout(() => overlay.classList.add('modal-open'), 10);
             
             if(id) {
                 const i = localData.find(x => x.id === id);
@@ -291,20 +277,24 @@
             }
         }
 
-        function closeModal() {
-            document.body.classList.remove('modal-open');
-            setTimeout(() => document.getElementById('modalOverlay').style.display = 'none', 300);
+        function openFullTable() {
+            const overlay = document.getElementById('fullTableOverlay');
+            overlay.style.display = 'flex';
+            renderFull();
+            setTimeout(() => overlay.classList.add('modal-open'), 10);
         }
 
-        function toggleFullTable(show) {
-            document.getElementById('fullTableOverlay').style.display = show ? 'flex' : 'none';
-            if(show) renderFull();
+        function closeModal(overlayId) {
+            const overlay = document.getElementById(overlayId);
+            const sheet = overlay.querySelector('.modal-sheet');
+            overlay.classList.remove('modal-open');
+            sheet.style.transform = 'translateY(100%)';
+            setTimeout(() => { overlay.style.display = 'none'; }, 300);
         }
 
         function renderFull() {
             const fb = document.getElementById('fullTableBody');
             const ft = document.getElementById('fullTableFoot');
-            
             let totalKrg = 0, totalTap = 0, totalSwp = 0;
 
             fb.innerHTML = localData.map(i => {
@@ -318,16 +308,58 @@
             }).join('');
 
             ft.innerHTML = `<tr style="background:#f1f5f9">
-                <td colspan="6" style="text-align:right; padding-right:20px">TOTAL</td>
-                <td>${totalKrg}</td>
-                <td>${totalTap.toFixed(2)}</td>
-                <td>${totalSwp.toFixed(2)}</td>
-                <td>-</td>
+                <td colspan="6" style="text-align:right; font-weight:800; padding-right:15px">TOTAL</td>
+                <td>${totalKrg}</td><td>${totalTap.toFixed(2)}</td><td>${totalSwp.toFixed(2)}</td><td>-</td>
             </tr>`;
-
-            // Aktifkan gesture di Full Table setelah di render
             setupGestures('#fullTableBody tr');
         }
+
+        // --- Logic Lainnya (Sama Seperti Sebelumnya) ---
+        function setupGestures(selector) {
+            const rows = document.querySelectorAll(selector);
+            rows.forEach(row => {
+                const id = row.getAttribute('data-id');
+                row.onmousedown = (e) => startPress(e, id);
+                row.onmouseup = () => endPress();
+                row.ontouchstart = (e) => startPress(e, id);
+                row.ontouchend = () => endPress();
+                if(selector === '#tableBody tr') {
+                    row.onclick = () => { if (!isLongPress) openModal(parseInt(id), true); };
+                }
+            });
+        }
+
+        function startPress(e, id) {
+            isLongPress = false;
+            clearTimeout(pressTimer);
+            pressTimer = setTimeout(() => {
+                isLongPress = true;
+                selectedId = parseInt(id);
+                openActionMenu();
+            }, 600);
+        }
+        function endPress() { clearTimeout(pressTimer); }
+
+        function openActionMenu() {
+            const menu = document.getElementById('actionMenuOverlay');
+            menu.style.display = 'flex';
+            if(window.navigator.vibrate) window.navigator.vibrate(40);
+        }
+        function closeActionMenu() { document.getElementById('actionMenuOverlay').style.display = 'none'; }
+
+        function handleEditFromMenu() { closeActionMenu(); closeModal('fullTableOverlay'); openModal(selectedId, false); }
+        function handleDeleteFromMenu() { closeActionMenu(); openDeleteDialog(selectedId); }
+        function openDeleteDialog(id) { selectedId = id; document.getElementById('deleteDialog').style.display = 'flex'; }
+        function closeDeleteDialog() { document.getElementById('deleteDialog').style.display = 'none'; }
+
+        document.getElementById('confirmDeleteBtn').onclick = () => {
+            localData = localData.filter(x => x.id !== selectedId);
+            localStorage.setItem('prod_v31', JSON.stringify(localData));
+            render();
+            if(document.getElementById('fullTableOverlay').style.display === 'flex') renderFull();
+            closeDeleteDialog();
+            showToast("Produk dihapus");
+        };
 
         function calcLabels() {
             const s = parseInt(document.getElementById('labelDari').value);
@@ -346,18 +378,6 @@
             t.classList.add('show');
             setTimeout(() => t.classList.remove('show'), 3000);
         }
-
-        function openDeleteDialog(id) { selectedId = id; document.getElementById('deleteDialog').style.display = 'flex'; }
-        function closeDeleteDialog() { document.getElementById('deleteDialog').style.display = 'none'; }
-
-        document.getElementById('confirmDeleteBtn').onclick = () => {
-            localData = localData.filter(x => x.id !== selectedId);
-            localStorage.setItem('prod_v31', JSON.stringify(localData));
-            render();
-            if(document.getElementById('fullTableOverlay').style.display === 'flex') renderFull();
-            closeDeleteDialog();
-            showToast("Produk dihapus");
-        };
 
         document.getElementById('prodForm').onsubmit = e => {
             e.preventDefault();
@@ -381,25 +401,24 @@
             if(eid) localData = localData.map(x => x.id === parseInt(eid) ? obj : x);
             else localData.push(obj);
             localStorage.setItem('prod_v31', JSON.stringify(localData));
-            closeModal(); render(); showToast("Berhasil disimpan");
+            closeModal('modalOverlay'); render(); showToast("Berhasil disimpan");
         };
 
         function render() {
             const tb = document.getElementById('tableBody');
             tb.innerHTML = localData.map(i => `<tr data-id="${i.id}">
-                <td>
-                    <div style="font-weight:800; color:#0f172a">${i.namaProduk}</div>
-                    <div style="font-size:9px; opacity:0.5; margin-top:2px">${i.jamAwal} — ${i.jamAkhir}</div>
-                </td>
-                <td>${i.versi}</td>
-                <td style="color:#2563eb; font-weight:800">${i.jmlKarung}</td>
-                <td>${i.lineBagging}</td>
+                <td><div style="font-weight:800; color:#0f172a">${i.namaProduk}</div><div style="font-size:9px; opacity:0.5">${i.jamAwal}-${i.jamAkhir}</div></td>
+                <td>${i.versi}</td><td style="color:#2563eb; font-weight:800">${i.jmlKarung}</td><td>${i.lineBagging}</td>
             </tr>`).join('');
             setupGestures('#tableBody tr');
             lucide.createIcons();
         }
 
-        window.onload = render;
+        window.onload = () => {
+            render();
+            initDragToDismiss('modalOverlay', 'modalSheet');
+            initDragToDismiss('fullTableOverlay', 'fullTableSheet');
+        };
     </script>
 </body>
 </html>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Laporan Hasil Produksi v34.2</title>
+    <title>Laporan Hasil Produksi v34.1</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
@@ -20,95 +20,94 @@
         .card { background: white; border-radius: 24px; padding: 20px; border: 1px solid #f1f5f9; box-shadow: 0 4px 15px rgba(0,0,0,0.01); margin-bottom: 15px; }
         .section-title { font-size: 10px; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; display: block; }
         
-        /* MODERN DROPDOWN & FIELD */
-        .field { 
-            width: 100%; background: #f8fafc; border: 1.5px solid #f1f5f9; border-radius: 14px; 
-            padding: 14px; font-size: 14px; font-weight: 700; color: #334155; outline: none; 
-            transition: 0.2s; appearance: none;
-        }
-        .field:focus { border-color: #2563eb; background: white; box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.05); }
-        
-        /* Custom Arrow for Dropdowns */
-        .select-wrapper { position: relative; width: 100%; }
-        .select-wrapper::after { 
-            content: ''; position: absolute; right: 16px; top: 50%; transform: translateY(-50%);
-            width: 10px; height: 10px; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2394a3b8' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
-            background-size: contain; background-repeat: no-repeat; pointer-events: none;
-        }
+        /* FORM FIELDS */
+        .field { width: 100%; background: #f8fafc; border: 1.5px solid #f1f5f9; border-radius: 14px; padding: 14px; font-size: 14px; font-weight: 700; color: #334155; outline: none; transition: 0.2s; appearance: none; }
+        .field:focus { border-color: #2563eb; background: white; }
+        .field-readonly { background: #f1f5f9; color: #64748b; cursor: not-allowed; border-style: dashed; }
 
+        /* INPUT GROUP DENGAN IKON */
         .input-group { position: relative; margin-bottom: 12px; }
-        .input-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #94a3b8; pointer-events: none; z-index: 5; }
+        .input-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #94a3b8; pointer-events: none; z-index: 2; }
         .field-with-icon { padding-left: 45px !important; }
 
-        /* SHIFT BADGE */
+        /* SHIFT BADGE DESIGN */
         .shift-info-badge { 
             display: flex; flex-direction: column; align-items: center; justify-content: center; 
-            background: #f1f5f9; border: 1.5px solid #f1f5f9; border-radius: 14px; 
-            padding: 8px; transition: 0.3s; 
+            background: #eff6ff; border: 1px dashed #bfdbfe; border-radius: 14px; 
+            padding: 8px; transition: all 0.3s ease; 
         }
-        .shift-label { font-size: 8px; font-weight: 800; color: #94a3b8; text-transform: uppercase; margin-bottom: 2px; }
-        #displayJamKerja { font-weight: 800; color: #1e293b; font-size: 11px; letter-spacing: 0.5px; }
+        .shift-label { font-size: 8px; font-weight: 700; color: #64748b; text-transform: uppercase; margin-bottom: 2px; }
+        #displayJamKerja { font-weight: 800; color: #2563eb; font-size: 11px; letter-spacing: 0.5px; transition: opacity 0.2s; }
 
-        /* MODAL SHEET */
-        .modal-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(8px); display: none; align-items: flex-end; z-index: 3000; opacity: 0; transition: opacity 0.3s ease; }
-        .modal-overlay.active { display: flex; opacity: 1; }
-        .modal-sheet { 
-            background: white; width: 100%; border-radius: 32px 32px 0 0; 
-            padding: 12px 24px 40px 24px; max-height: 94vh; overflow-y: auto; 
-            transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); 
-        }
-        .modal-overlay.active .modal-sheet { transform: translateY(0); }
-        .drag-handle-container { width: 100%; padding: 12px 0 20px 0; display: flex; justify-content: center; cursor: grab; }
-        .drag-handle { width: 40px; height: 5px; background: #e2e8f0; border-radius: 10px; }
-
-        /* TABLE */
+        /* TABLE STYLES */
         .table-container { width: 100%; border-radius: 20px; border: 1px solid #f1f5f9; overflow: hidden; }
         table { width: 100%; border-collapse: collapse; font-size: 10.5px; table-layout: fixed; }
         th { background: #f8fafc; padding: 12px 10px; font-weight: 800; color: #64748b; border-bottom: 1px solid #f1f5f9; text-align: left; }
-        td { padding: 16px 10px; border-bottom: 1px solid #f1f5f9; font-weight: 600; color: #475569; }
+        td { padding: 16px 10px; border-bottom: 1px solid #f1f5f9; font-weight: 600; color: #475569; transition: 0.2s; cursor: pointer; }
+
+        /* MODAL & DIALOG */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(8px); display: none; align-items: flex-end; z-index: 3000; }
+        .modal-sheet { background: white; width: 100%; border-radius: 35px 35px 0 0; padding: 15px 25px 40px 25px; max-height: 94vh; overflow-y: auto; transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1); position: relative; }
+        .modal-open .modal-sheet { transform: translateY(0); }
+        .drag-handle { width: 40px; height: 5px; background: #e2e8f0; border-radius: 10px; margin: 0 auto 20px auto; }
+
+        .action-menu-overlay, .dialog-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; z-index: 4000; padding: 20px; }
+        .action-menu { background: white; width: 100%; max-width: 280px; border-radius: 28px; padding: 12px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); display: flex; flex-direction: column; gap: 8px; }
+        .action-menu button { width: 100%; padding: 16px; border: none; background: #f8fafc; border-radius: 18px; display: flex; align-items: center; gap: 12px; font-size: 14px; font-weight: 700; color: #334155; cursor: pointer; }
+        .action-menu button.btn-delete { color: #ef4444; }
+        
+        .dialog-box { background: white; border-radius: 28px; width: 100%; }
 
         #toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px); background: #1e293b; color: white; padding: 14px 24px; border-radius: 20px; font-size: 13px; font-weight: 700; transition: 0.5s; opacity: 0; z-index: 5000; }
         #toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
         
-        .btn-fab { position: fixed; bottom: 30px; right: 25px; width: 64px; height: 64px; background: #2563eb; color: white; border: none; border-radius: 22px; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 25px rgba(37, 99, 235, 0.4); z-index: 800; }
+        .fab-container { position: fixed; bottom: 30px; right: 25px; z-index: 800; }
+        .btn-fab { width: 64px; height: 64px; background: #2563eb; color: white; border: none; border-radius: 22px; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 25px rgba(37, 99, 235, 0.4); }
     </style>
 </head>
 <body>
 
     <div id="toast"><span id="toastMsg">Berhasil</span></div>
 
+    <!-- NAVBAR -->
     <nav class="navbar">
         <h1 class="logo">Laporan Hasil Produksi</h1>
-        <button class="btn-sync" onclick="showToast('Data disinkronkan')"><i data-lucide="send" size="18"></i></button>
+        <button class="btn-sync" onclick="sendToGoogleSheet()"><i data-lucide="send" size="18"></i></button>
     </nav>
 
     <div class="container">
-        <!-- SEKSI TANGGAL & SHIFT -->
+        <!-- SEKSI TANGGAL & SHIFT (NEW DESIGN) -->
         <div class="card">
             <span class="section-title">Informasi Produksi</span>
+            
             <div class="input-group">
                 <i data-lucide="calendar" class="input-icon" size="18"></i>
                 <input type="date" id="globalTanggal" class="field field-with-icon">
             </div>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-                <div class="select-wrapper">
-                    <select id="globalShift" class="field" onchange="updateShiftTime()">
+
+            <div style="display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 12px;">
+                <div class="input-group" style="margin-bottom: 0;">
+                    <i data-lucide="layers" class="input-icon" size="18"></i>
+                    <select id="globalShift" class="field field-with-icon" onchange="autoFillShiftTime()">
                         <option value="" disabled selected>Pilih Shift</option>
                         <option value="1">Shift 1</option>
                         <option value="2">Shift 2</option>
                         <option value="3">Shift 3</option>
                     </select>
                 </div>
-                <div class="shift-info-badge" id="shiftBadge">
-                    <span class="shift-label">Operasional</span>
+
+                <div class="shift-info-badge" id="badgeJam">
+                    <span class="shift-label">Jam Kerja</span>
                     <span id="displayJamKerja">--:-- — --:--</span>
                 </div>
             </div>
         </div>
 
+        <!-- DAFTAR PRODUK -->
         <div class="card" style="padding:15px;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px">
                 <span class="section-title" style="margin-bottom:0">Daftar Produk</span>
+                <button style="background:none; border:none; color:#2563eb" onclick="openFullTable()"><i data-lucide="maximize" size="18"></i></button>
             </div>
             <div class="table-container">
                 <table>
@@ -121,156 +120,323 @@
                         </tr>
                     </thead>
                     <tbody id="tableBody"></tbody>
+                    <tfoot id="mainTableFoot"></tfoot>
                 </table>
             </div>
         </div>
     </div>
 
     <!-- MODAL FORM -->
-    <div class="modal-overlay" id="modalOverlay" onclick="closeModalIfOutside(event)">
+    <div class="modal-overlay" id="modalOverlay">
         <div class="modal-sheet" id="modalSheet">
-            <div class="drag-handle-container" id="dragHandle">
-                <div class="drag-handle"></div>
+            <div class="drag-handle"></div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:25px">
+                <h2 id="modalTitle" style="font-weight:800; font-size:1.1rem">Tambah Produk</h2>
+                <button onclick="closeModal('modalOverlay')" style="background:none; border:none; color:#cbd5e1"><i data-lucide="x-circle" size="30"></i></button>
             </div>
-            <h2 id="modalTitle" style="font-weight:800; font-size:1.1rem; margin-bottom:20px; text-align:center">Tambah Produk</h2>
             <form id="prodForm">
                 <input type="hidden" id="editId">
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px;">
-                    <div><span class="section-title">Produk</span><input type="text" id="namaProduk" required class="field" placeholder="Nama"></div>
-                    <div><span class="section-title">Versi</span><input type="text" id="versi" required class="field" placeholder="V1.0"></div>
+                    <div><span class="section-title">Produk</span><input type="text" id="namaProduk" required class="field"></div>
+                    <div><span class="section-title">Versi</span><input type="text" id="versi" required class="field"></div>
                 </div>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px;">
                     <div><span class="section-title">Line</span>
-                        <div class="select-wrapper">
-                            <select id="lineBagging" required class="field">
-                                <option value="Line 1">Line 1</option>
-                                <option value="Line 2">Line 2</option>
-                                <option value="Line 3">Line 3</option>
-                                <option value="Line 4">Line 4</option>
-                            </select>
-                        </div>
+                        <select id="lineBagging" required class="field">
+                            <option value="Line 1">Line 1</option><option value="Line 2">Line 2</option>
+                            <option value="Line 3">Line 3</option><option value="Line 4">Line 4</option>
+                        </select>
                     </div>
-                    <div><span class="section-title">Kavling</span><input type="text" id="kavling" required class="field" placeholder="A1"></div>
+                    <div><span class="section-title">Kavling</span><input type="text" id="kavling" required class="field"></div>
                 </div>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px;">
                     <div><span class="section-title">Mulai</span><input type="time" id="jamAwal" required class="field"></div>
                     <div><span class="section-title">Akhir</span><input type="time" id="jamAkhir" required class="field"></div>
                 </div>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px;">
-                    <div><span class="section-title">Batch</span><input type="number" id="jmlBatch" required class="field" value="0"></div>
-                    <div><span class="section-title" style="color:#2563eb">Karung</span><input type="number" id="jmlKarung" required class="field" value="0" style="background:#eff6ff"></div>
+                    <div><span class="section-title">Label Mulai</span><input type="number" id="labelDari" required class="field" oninput="calcLabels()"></div>
+                    <div><span class="section-title">Label Selesai</span><input type="number" id="labelSampai" readonly class="field field-readonly"></div>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px;">
+                    <div><span class="section-title">Batch</span><input type="number" id="jmlBatch" required class="field"></div>
+                    <div><span class="section-title" style="color:#2563eb">Karung</span><input type="number" id="jmlKarung" required class="field" oninput="calcLabels()" style="background:#eff6ff"></div>
                 </div>
                 <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 30px;">
                     <div><span class="section-title">Tap (Kg)</span><input type="number" step="0.01" id="jmlTap" class="field" value="0"></div>
                     <div><span class="section-title">Sweep (Kg)</span><input type="number" step="0.01" id="jmlSweeping" class="field" value="0"></div>
                     <div><span class="section-title" style="color:#ef4444">Robek</span><input type="number" id="jmlRobek" class="field" value="0"></div>
                 </div>
-                <button type="submit" style="width:100%; height:60px; background:#2563eb; color:white; border:none; border-radius:20px; font-weight:800; font-size: 1rem; letter-spacing: 1px;">SIMPAN DATA</button>
+                <button type="submit" id="submitBtn" style="width:100%; height:60px; background:#2563eb; color:white; border:none; border-radius:20px; font-weight:800;">SIMPAN PRODUK</button>
             </form>
         </div>
     </div>
 
-    <button class="btn-fab" onclick="openModal()"><i data-lucide="plus" size="32"></i></button>
+    <!-- FULL TABLE VIEW -->
+    <div class="modal-overlay" id="fullTableOverlay">
+        <div class="modal-sheet" id="fullTableSheet">
+            <div class="drag-handle"></div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px">
+                <h2 style="font-weight:800; font-size:1.1rem">Detail Semua Produk</h2>
+                <button onclick="closeModal('fullTableOverlay')" style="background:none; border:none; color:#cbd5e1"><i data-lucide="x-circle" size="30"></i></button>
+            </div>
+            <div style="overflow-x: auto;">
+                <table style="min-width: 900px; font-size: 11px;">
+                    <thead>
+                        <tr style="background:#f8fafc">
+                            <th>Jam</th><th>Produk</th><th>Versi</th><th>Line</th><th>Kav</th><th>Label</th><th>Karung</th><th>Tap</th><th>Sweep</th><th>Robek</th>
+                        </tr>
+                    </thead>
+                    <tbody id="fullTableBody"></tbody>
+                    <tfoot id="fullTableFoot"></tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ACTION MENU -->
+    <div id="actionMenuOverlay" class="action-menu-overlay" onclick="closeActionMenu()">
+        <div class="action-menu" onclick="event.stopPropagation()">
+            <div style="padding: 8px 16px 4px 16px; font-size: 10px; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px;">Opsi Produk</div>
+            <button onclick="handleEditFromMenu()"><i data-lucide="edit-3" size="18"></i><span>Edit Produk</span></button>
+            <button onclick="handleDeleteFromMenu()" class="btn-delete"><i data-lucide="trash-2" size="18"></i><span>Hapus Produk</span></button>
+        </div>
+    </div>
+
+    <!-- DELETE DIALOG -->
+    <div id="deleteDialog" class="dialog-overlay">
+        <div class="dialog-box" style="padding:25px; max-width: 320px;">
+            <h3 style="font-weight:800; margin-bottom:12px; text-align:center">Hapus Produk?</h3>
+            <p style="text-align: center; font-size: 13px; color: #64748b; margin-bottom: 20px;">Data yang dihapus tidak dapat dikembalikan.</p>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                <button onclick="closeDeleteDialog()" style="background:#f1f5f9; border:none; padding:14px; border-radius:16px; font-weight:700;">Batal</button>
+                <button id="confirmDeleteBtn" style="background:#ef4444; border:none; padding:14px; border-radius:16px; font-weight:700; color:white;">Hapus</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- FAB -->
+    <div class="fab-container">
+        <button class="btn-fab" onclick="openModal()"><i data-lucide="plus" size="32"></i></button>
+    </div>
 
     <script>
         lucide.createIcons();
-        let localData = JSON.parse(localStorage.getItem('prod_v34')) || [];
-        
-        // IMPROVED GESTURE SWIPE
-        const sheet = document.getElementById('modalSheet');
-        const overlay = document.getElementById('modalOverlay');
-        let startY = 0;
-        let currentY = 0;
+        let localData = JSON.parse(localStorage.getItem('prod_v31')) || [];
+        let selectedId = null;
+        let pressTimer = null;
+        let isLongPress = false;
 
-        sheet.addEventListener('touchstart', (e) => {
-            startY = e.touches[0].clientY;
-            sheet.style.transition = 'none';
-        });
+        window.onload = () => {
+            initDragToDismiss('modalOverlay', 'modalSheet');
+            initDragToDismiss('fullTableOverlay', 'fullTableSheet');
+            renderTable();
+        };
 
-        sheet.addEventListener('touchmove', (e) => {
-            currentY = e.touches[0].clientY - startY;
-            if (currentY > 0) {
-                sheet.style.transform = `translateY(${currentY}px)`;
-            }
-        });
-
-        sheet.addEventListener('touchend', (e) => {
-            sheet.style.transition = 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)';
-            if (currentY > 120) {
-                closeModal();
-            } else {
-                sheet.style.transform = 'translateY(0)';
-            }
-            currentY = 0;
-        });
-
-        function updateShiftTime() {
-            const shift = document.getElementById('globalShift').value;
-            const display = document.getElementById('displayJamKerja');
-            const badge = document.getElementById('shiftBadge');
+        // UI Helpers
+        function autoFillShiftTime() {
+            const s = document.getElementById('globalShift').value;
+            const d = document.getElementById('displayJamKerja');
+            const badge = document.getElementById('badgeJam');
             
-            // KEMBALI KE JAM KERJA SEMULA
-            let times = { 
-                "1": "08:00 — 16:00", 
-                "2": "16:00 — 00:00", 
-                "3": "00:00 — 08:00" 
-            };
-            
-            display.innerText = times[shift] || "--:-- — --:--";
-            badge.style.background = "#eff6ff";
-            badge.style.borderColor = "#bfdbfe";
-            display.style.color = "#2563eb";
+            // UPDATE: Jam operasional baru
+            let timeText = "";
+            switch(s) {
+                case "1": timeText = "08:00 — 16:00"; break;
+                case "2": timeText = "16:00 — 00:00"; break;
+                case "3": timeText = "00:00 — 08:00"; break;
+                default: timeText = "--:-- — --:--";
+            }
+
+            d.style.opacity = 0;
+            setTimeout(() => {
+                d.innerText = timeText;
+                d.style.opacity = 1;
+                badge.style.background = "#dbeafe";
+                setTimeout(() => badge.style.background = "#eff6ff", 300);
+            }, 100);
         }
 
-        function openModal() {
+        function initDragToDismiss(overlayId, sheetId) {
+            const overlay = document.getElementById(overlayId);
+            const sheet = document.getElementById(sheetId);
+            let startY = 0, currentY = 0;
+
+            sheet.addEventListener('touchstart', (e) => { 
+                if (sheet.scrollTop > 0) return; 
+                startY = e.touches[0].clientY; 
+                sheet.style.transition = 'none'; 
+            }, { passive: true });
+
+            sheet.addEventListener('touchmove', (e) => { 
+                if (sheet.scrollTop > 0) return; 
+                currentY = e.touches[0].clientY - startY; 
+                if (currentY > 0) sheet.style.transform = `translateY(${currentY}px)`; 
+            }, { passive: true });
+
+            sheet.addEventListener('touchend', () => { 
+                sheet.style.transition = 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)'; 
+                if (currentY > 120) closeModal(overlayId); 
+                else sheet.style.transform = 'translateY(0)'; 
+                currentY = 0; 
+            });
+        }
+
+        function closeModal(overlayId) {
+            const overlay = document.getElementById(overlayId);
+            const sheet = overlay.querySelector('.modal-sheet');
+            overlay.classList.remove('modal-open');
+            sheet.style.transform = 'translateY(100%)';
+            setTimeout(() => { overlay.style.display = 'none'; sheet.style.transform = ''; }, 300);
+        }
+
+        function openModal(id = null, isViewOnly = false) {
+            const overlay = document.getElementById('modalOverlay');
+            const form = document.getElementById('prodForm');
+            const submitBtn = document.getElementById('submitBtn');
+            const title = document.getElementById('modalTitle');
             overlay.style.display = 'flex';
-            setTimeout(() => overlay.classList.add('active'), 10);
-            document.getElementById('prodForm').reset();
-        }
-
-        function closeModal() {
-            overlay.classList.remove('active');
-            setTimeout(() => { 
-                overlay.style.display = 'none';
-                sheet.style.transform = 'translateY(100%)';
-            }, 300);
-        }
-
-        function closeModalIfOutside(e) {
-            if (e.target === overlay) closeModal();
+            setTimeout(() => overlay.classList.add('modal-open'), 10);
+            
+            if(id) {
+                const i = localData.find(x => x.id === id);
+                document.getElementById('editId').value = i.id;
+                document.getElementById('namaProduk').value = i.namaProduk;
+                document.getElementById('versi').value = i.versi;
+                document.getElementById('lineBagging').value = i.lineBagging;
+                document.getElementById('kavling').value = i.kavling;
+                document.getElementById('jamAwal').value = i.jamAwal;
+                document.getElementById('jamAkhir').value = i.jamAkhir;
+                document.getElementById('labelDari').value = i.labelDari;
+                document.getElementById('labelSampai').value = i.labelSampai;
+                document.getElementById('jmlBatch').value = i.jmlBatch;
+                document.getElementById('jmlKarung').value = i.jmlKarung;
+                document.getElementById('jmlTap').value = i.jmlTap;
+                document.getElementById('jmlSweeping').value = i.jmlSweeping;
+                document.getElementById('jmlRobek').value = i.jmlRobek;
+                
+                if(isViewOnly) {
+                    title.innerText = "Detail Produk";
+                    submitBtn.style.display = "none";
+                    Array.from(form.elements).forEach(el => el.disabled = true);
+                } else {
+                    title.innerText = "Edit Produk";
+                    submitBtn.style.display = "block";
+                    Array.from(form.elements).forEach(el => el.disabled = false);
+                }
+            } else {
+                form.reset();
+                document.getElementById('editId').value = "";
+                title.innerText = "Tambah Produk";
+                submitBtn.style.display = "block";
+                Array.from(form.elements).forEach(el => el.disabled = false);
+            }
         }
 
         function renderTable() {
             const tb = document.getElementById('tableBody');
-            tb.innerHTML = localData.length ? localData.map(i => `
-                <tr>
+            const tf = document.getElementById('mainTableFoot');
+            let totalKarung = 0;
+
+            if (localData.length === 0) {
+                tb.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:40px; color:#94a3b8">Belum ada data</td></tr>`;
+                tf.innerHTML = "";
+                return;
+            }
+
+            tb.innerHTML = localData.map(i => {
+                totalKarung += parseInt(i.jmlKarung || 0);
+                return `<tr data-id="${i.id}">
                     <td>
                         <div style="font-weight:800; color:#0f172a">${i.namaProduk}</div>
-                        <div style="font-size:9px; color:#94a3b8">${i.jamAwal} — ${i.jamAkhir}</div>
+                        <div style="font-size:9px; color:#94a3b8; margin-top:2px">${i.jamAwal} — ${i.jamAkhir}</div>
                     </td>
                     <td>${i.versi}</td>
                     <td style="font-weight:800; color:#2563eb">${i.jmlKarung}</td>
                     <td><span style="background:#f1f5f9; padding:4px 8px; border-radius:8px; font-size:9px">${i.lineBagging}</span></td>
-                </tr>
-            `).join('') : '<tr><td colspan="4" style="text-align:center; padding:20px; color:#94a3b8">Belum ada data</td></tr>';
+                </tr>`;
+            }).join('');
+
+            tf.innerHTML = `<tr>
+                <td colspan="2" style="text-align:right; font-size:10px; color:#94a3b8">TOTAL KARUNG</td>
+                <td style="font-size:13px; color:#2563eb">${totalKarung}</td>
+                <td></td>
+            </tr>`;
+
+            setupGestures('#tableBody tr');
+        }
+
+        function calcLabels() {
+            const dari = parseInt(document.getElementById('labelDari').value) || 0;
+            const krg = parseInt(document.getElementById('jmlKarung').value) || 0;
+            document.getElementById('labelSampai').value = dari + krg;
         }
 
         document.getElementById('prodForm').onsubmit = (e) => {
             e.preventDefault();
-            const data = {
-                id: Date.now(),
+            const id = document.getElementById('editId').value;
+            const newData = {
+                id: id ? parseInt(id) : Date.now(),
                 namaProduk: document.getElementById('namaProduk').value,
                 versi: document.getElementById('versi').value,
                 lineBagging: document.getElementById('lineBagging').value,
+                kavling: document.getElementById('kavling').value,
                 jamAwal: document.getElementById('jamAwal').value,
                 jamAkhir: document.getElementById('jamAkhir').value,
-                jmlKarung: document.getElementById('jmlKarung').value
+                labelDari: document.getElementById('labelDari').value,
+                labelSampai: document.getElementById('labelSampai').value,
+                jmlBatch: document.getElementById('jmlBatch').value,
+                jmlKarung: document.getElementById('jmlKarung').value,
+                jmlTap: document.getElementById('jmlTap').value,
+                jmlSweeping: document.getElementById('jmlSweeping').value,
+                jmlRobek: document.getElementById('jmlRobek').value
             };
-            localData.push(data);
-            localStorage.setItem('prod_v34', JSON.stringify(localData));
+
+            if(id) {
+                const idx = localData.findIndex(x => x.id === parseInt(id));
+                localData[idx] = newData;
+            } else {
+                localData.push(newData);
+            }
+
+            localStorage.setItem('prod_v31', JSON.stringify(localData));
+            closeModal('modalOverlay');
             renderTable();
-            closeModal();
-            showToast("Data Berhasil Disimpan");
+            showToast(id ? "Data diperbarui" : "Data disimpan");
+        };
+
+        function setupGestures(selector) {
+            const rows = document.querySelectorAll(selector);
+            rows.forEach(row => {
+                const id = row.getAttribute('data-id');
+                row.ontouchstart = (e) => startPress(e, id);
+                row.ontouchend = () => endPress();
+                row.onclick = () => { if (!isLongPress) openModal(parseInt(id), true); };
+            });
+        }
+
+        function startPress(e, id) {
+            isLongPress = false;
+            clearTimeout(pressTimer);
+            pressTimer = setTimeout(() => {
+                isLongPress = true;
+                selectedId = parseInt(id);
+                document.getElementById('actionMenuOverlay').style.display = 'flex';
+                if(navigator.vibrate) navigator.vibrate(50);
+            }, 600);
+        }
+
+        function endPress() { clearTimeout(pressTimer); }
+        function closeActionMenu() { document.getElementById('actionMenuOverlay').style.display = 'none'; }
+        function handleEditFromMenu() { closeActionMenu(); openModal(selectedId); }
+        function handleDeleteFromMenu() { closeActionMenu(); document.getElementById('deleteDialog').style.display = 'flex'; }
+        function closeDeleteDialog() { document.getElementById('deleteDialog').style.display = 'none'; }
+
+        document.getElementById('confirmDeleteBtn').onclick = () => {
+            localData = localData.filter(x => x.id !== selectedId);
+            localStorage.setItem('prod_v31', JSON.stringify(localData));
+            renderTable();
+            closeDeleteDialog();
+            showToast("Data dihapus");
         };
 
         function showToast(msg) {
@@ -280,7 +446,32 @@
             setTimeout(() => t.classList.remove('show'), 3000);
         }
 
-        renderTable();
+        function openFullTable() {
+            const overlay = document.getElementById('fullTableOverlay');
+            overlay.style.display = 'flex';
+            renderFull();
+            setTimeout(() => overlay.classList.add('modal-open'), 10);
+        }
+
+        function renderFull() {
+            const fb = document.getElementById('fullTableBody');
+            const ft = document.getElementById('fullTableFoot');
+            let totalKrg = 0, totalTap = 0, totalSwp = 0;
+            fb.innerHTML = localData.map(i => {
+                totalKrg += parseInt(i.jmlKarung || 0);
+                totalTap += parseFloat(i.jmlTap || 0);
+                totalSwp += parseFloat(i.jmlSweeping || 0);
+                return `<tr>
+                    <td>${i.jamAwal}-${i.jamAkhir}</td><td>${i.namaProduk}</td><td>${i.versi}</td><td>${i.lineBagging}</td><td>${i.kavling}</td>
+                    <td>${i.labelDari}-${i.labelSampai}</td><td>${i.jmlKarung}</td><td>${i.jmlTap}</td><td>${i.jmlSweeping}</td><td>${i.jmlRobek}</td>
+                </tr>`;
+            }).join('');
+            ft.innerHTML = `<tr style="background:#f1f5f9"><td colspan="6" style="text-align:right; font-weight:800; padding-right:15px">TOTAL</td><td>${totalKrg}</td><td>${totalTap.toFixed(2)}</td><td>${totalSwp.toFixed(2)}</td><td>-</td></tr>`;
+        }
+
+        function sendToGoogleSheet() {
+            showToast("Sinkronisasi dimulai...");
+        }
     </script>
 </body>
 </html>

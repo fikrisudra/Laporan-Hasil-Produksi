@@ -7,6 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
+        /* CSS RESET & CORE */
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; -webkit-tap-highlight-color: transparent; }
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; color: #1e293b; padding-bottom: 100px; overflow-x: hidden; }
         
@@ -19,57 +20,113 @@
         .card { background: white; border-radius: 24px; padding: 20px; border: 1px solid #f1f5f9; box-shadow: 0 4px 15px rgba(0,0,0,0.01); margin-bottom: 15px; }
         .section-title { font-size: 10px; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; display: block; }
         
+        /* FORM FIELDS */
         .field { width: 100%; background: #f8fafc; border: 1.5px solid #f1f5f9; border-radius: 14px; padding: 14px; font-size: 14px; font-weight: 700; color: #334155; outline: none; transition: 0.2s; }
         .field:focus { border-color: #2563eb; background: white; }
         .field-readonly { background: #f1f5f9; color: #64748b; cursor: not-allowed; border-style: dashed; }
 
+        /* INPUT GROUP DENGAN IKON */
+        .input-group { position: relative; margin-bottom: 12px; }
+        .input-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #94a3b8; pointer-events: none; }
+        .field-with-icon { padding-left: 45px !important; }
+
+        /* SHIFT BADGE DESIGN */
+        .shift-info-badge { 
+            display: flex; flex-direction: column; align-items: center; justify-content: center; 
+            background: #eff6ff; border: 1px dashed #bfdbfe; border-radius: 14px; 
+            padding: 8px; transition: all 0.3s ease; 
+        }
+        .shift-label { font-size: 8px; font-weight: 700; color: #64748b; text-transform: uppercase; margin-bottom: 2px; }
+        #displayJamKerja { font-weight: 800; color: #2563eb; font-size: 11px; letter-spacing: 0.5px; transition: opacity 0.2s; }
+
+        /* TABLE STYLES */
         .table-container { width: 100%; border-radius: 20px; border: 1px solid #f1f5f9; overflow: hidden; }
         table { width: 100%; border-collapse: collapse; font-size: 10.5px; table-layout: fixed; }
         th { background: #f8fafc; padding: 12px 10px; font-weight: 800; color: #64748b; border-bottom: 1px solid #f1f5f9; text-align: left; }
         td { padding: 16px 10px; border-bottom: 1px solid #f1f5f9; font-weight: 600; color: #475569; transition: 0.2s; cursor: pointer; }
 
-        /* Modal Sheet Styles */
+        /* MODAL & DIALOG */
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(8px); display: none; align-items: flex-end; z-index: 3000; }
-        .modal-sheet { 
-            background: white; width: 100%; border-radius: 35px 35px 0 0; 
-            padding: 15px 25px 40px 25px; max-height: 94vh; overflow-y: auto; 
-            transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1); 
-            position: relative; touch-action: none;
-        }
+        .modal-sheet { background: white; width: 100%; border-radius: 35px 35px 0 0; padding: 15px 25px 40px 25px; max-height: 94vh; overflow-y: auto; transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1); position: relative; }
         .modal-open .modal-sheet { transform: translateY(0); }
-        
-        .drag-handle { width: 40px; height: 5px; background: #e2e8f0; border-radius: 10px; margin: 0 auto 20px auto; cursor: grab; }
+        .drag-handle { width: 40px; height: 5px; background: #e2e8f0; border-radius: 10px; margin: 0 auto 20px auto; }
 
-        /* PERBAIKAN POP UP AKSI (Berdasarkan 63.png) */
         .action-menu-overlay, .dialog-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; z-index: 4000; padding: 20px; }
-        .action-menu { 
-            background: white; width: 100%; max-width: 280px; border-radius: 28px; padding: 12px; 
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2); display: flex; flex-direction: column; gap: 8px; 
-        }
-        .action-menu button {
-            width: 100%; padding: 16px; border: none; background: #f8fafc; border-radius: 18px;
-            display: flex; align-items: center; gap: 12px; font-family: 'Plus Jakarta Sans', sans-serif;
-            font-size: 14px; font-weight: 700; color: #334155; cursor: pointer; transition: all 0.2s ease;
-        }
-        .action-menu button:active { transform: scale(0.97); background: #f1f5f9; }
-        .action-menu button i { color: #64748b; }
+        .action-menu { background: white; width: 100%; max-width: 280px; border-radius: 28px; padding: 12px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); display: flex; flex-direction: column; gap: 8px; }
+        .action-menu button { width: 100%; padding: 16px; border: none; background: #f8fafc; border-radius: 18px; display: flex; align-items: center; gap: 12px; font-size: 14px; font-weight: 700; color: #334155; cursor: pointer; }
         .action-menu button.btn-delete { color: #ef4444; }
-        .action-menu button.btn-delete i { color: #ef4444; }
+        
+        .dialog-box { background: white; border-radius: 28px; width: 100%; }
 
         #toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px); background: #1e293b; color: white; padding: 14px 24px; border-radius: 20px; font-size: 13px; font-weight: 700; transition: 0.5s; opacity: 0; z-index: 5000; }
         #toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
         
         .fab-container { position: fixed; bottom: 30px; right: 25px; z-index: 800; }
         .btn-fab { width: 64px; height: 64px; background: #2563eb; color: white; border: none; border-radius: 22px; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 25px rgba(37, 99, 235, 0.4); }
-
-        tfoot tr td { background: #f8fafc; font-weight: 800; color: #0f172a; border-top: 2px solid #f1f5f9; padding: 12px 10px; }
     </style>
 </head>
 <body>
 
     <div id="toast"><span id="toastMsg">Berhasil</span></div>
 
-    <!-- Modal Form -->
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <h1 class="logo">Laporan Hasil Produksi</h1>
+        <button class="btn-sync" onclick="sendToGoogleSheet()"><i data-lucide="send" size="18"></i></button>
+    </nav>
+
+    <div class="container">
+        <!-- SEKSI TANGGAL & SHIFT (NEW DESIGN) -->
+        <div class="card">
+            <span class="section-title">Informasi Produksi</span>
+            
+            <div class="input-group">
+                <i data-lucide="calendar" class="input-icon" size="18"></i>
+                <input type="date" id="globalTanggal" class="field field-with-icon">
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 12px;">
+                <div class="input-group" style="margin-bottom: 0;">
+                    <i data-lucide="layers" class="input-icon" size="18"></i>
+                    <select id="globalShift" class="field field-with-icon" onchange="autoFillShiftTime()">
+                        <option value="" disabled selected>Pilih Shift</option>
+                        <option value="1">Shift 1</option>
+                        <option value="2">Shift 2</option>
+                        <option value="3">Shift 3</option>
+                    </select>
+                </div>
+
+                <div class="shift-info-badge" id="badgeJam">
+                    <span class="shift-label">Jam Kerja</span>
+                    <span id="displayJamKerja">--:-- — --:--</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- DAFTAR PRODUK -->
+        <div class="card" style="padding:15px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px">
+                <span class="section-title" style="margin-bottom:0">Daftar Produk</span>
+                <button style="background:none; border:none; color:#2563eb" onclick="openFullTable()"><i data-lucide="maximize" size="18"></i></button>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 40%;">Produk / Jam</th>
+                            <th style="width: 15%;">Versi</th>
+                            <th style="width: 25%;">Karung</th>
+                            <th style="width: 20%;">Line</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody"></tbody>
+                    <tfoot id="mainTableFoot"></tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL FORM -->
     <div class="modal-overlay" id="modalOverlay">
         <div class="modal-sheet" id="modalSheet">
             <div class="drag-handle"></div>
@@ -114,7 +171,7 @@
         </div>
     </div>
 
-    <!-- Full Table Modal -->
+    <!-- FULL TABLE VIEW -->
     <div class="modal-overlay" id="fullTableOverlay">
         <div class="modal-sheet" id="fullTableSheet">
             <div class="drag-handle"></div>
@@ -136,22 +193,16 @@
         </div>
     </div>
 
-    <!-- Menu Long Press -->
+    <!-- ACTION MENU -->
     <div id="actionMenuOverlay" class="action-menu-overlay" onclick="closeActionMenu()">
         <div class="action-menu" onclick="event.stopPropagation()">
             <div style="padding: 8px 16px 4px 16px; font-size: 10px; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px;">Opsi Produk</div>
-            <button onclick="handleEditFromMenu()">
-                <i data-lucide="edit-3" size="18"></i> 
-                <span>Edit Produk</span>
-            </button>
-            <button onclick="handleDeleteFromMenu()" class="btn-delete">
-                <i data-lucide="trash-2" size="18"></i> 
-                <span>Hapus Produk</span>
-            </button>
+            <button onclick="handleEditFromMenu()"><i data-lucide="edit-3" size="18"></i><span>Edit Produk</span></button>
+            <button onclick="handleDeleteFromMenu()" class="btn-delete"><i data-lucide="trash-2" size="18"></i><span>Hapus Produk</span></button>
         </div>
     </div>
 
-    <!-- Delete Dialog -->
+    <!-- DELETE DIALOG -->
     <div id="deleteDialog" class="dialog-overlay">
         <div class="dialog-box" style="padding:25px; max-width: 320px;">
             <h3 style="font-weight:800; margin-bottom:12px; text-align:center">Hapus Produk?</h3>
@@ -163,48 +214,7 @@
         </div>
     </div>
 
-    <nav class="navbar">
-        <h1 class="logo">Laporan Hasil Produksi</h1>
-        <button class="btn-sync" onclick="sendToGoogleSheet()"><i data-lucide="send" size="18"></i></button>
-    </nav>
-
-    <div class="container">
-        <div class="card">
-            <span class="section-title">Tanggal dan Jam</span>
-            <div style="margin-bottom:12px"><input type="date" id="globalTanggal" class="field"></div>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-                <select id="globalShift" class="field" onchange="autoFillShiftTime()">
-                    <option value="" disabled selected>Pilih Shift</option>
-                    <option value="1">Shift 1</option><option value="2">Shift 2</option><option value="3">Shift 3</option>
-                </select>
-                <div style="display:flex; align-items:center; justify-content:center; background:#f8fafc; border-radius:14px; border:1.5px solid #f1f5f9">
-                    <span id="displayJamKerja" style="font-weight:800; color:#2563eb; font-size:10px">00:00 — 00:00</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="card" style="padding:15px;">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px">
-                <span class="section-title" style="margin-bottom:0">Daftar Produk</span>
-                <button style="background:none; border:none; color:#2563eb" onclick="openFullTable()"><i data-lucide="maximize" size="18"></i></button>
-            </div>
-            <div class="table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th style="width: 40%;">Produk / Jam</th>
-                            <th style="width: 15%;">Versi</th>
-                            <th style="width: 25%;">Karung</th>
-                            <th style="width: 20%;">Line</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tableBody"></tbody>
-                    <tfoot id="mainTableFoot"></tfoot>
-                </table>
-            </div>
-        </div>
-    </div>
-
+    <!-- FAB -->
     <div class="fab-container">
         <button class="btn-fab" onclick="openModal()"><i data-lucide="plus" size="32"></i></button>
     </div>
@@ -216,37 +226,43 @@
         let pressTimer = null;
         let isLongPress = false;
 
-        // Inisialisasi gestur untuk lembar modal
         window.onload = () => {
             initDragToDismiss('modalOverlay', 'modalSheet');
             initDragToDismiss('fullTableOverlay', 'fullTableSheet');
             renderTable();
         };
 
+        // UI Helpers
+        function autoFillShiftTime() {
+            const s = document.getElementById('globalShift').value;
+            const d = document.getElementById('displayJamKerja');
+            const badge = document.getElementById('badgeJam');
+            
+            let timeText = "";
+            switch(s) {
+                case "1": timeText = "07:00 — 15:00"; break;
+                case "2": timeText = "15:00 — 23:00"; break;
+                case "3": timeText = "23:00 — 07:00"; break;
+                default: timeText = "--:-- — --:--";
+            }
+
+            d.style.opacity = 0;
+            setTimeout(() => {
+                d.innerText = timeText;
+                d.style.opacity = 1;
+                badge.style.background = "#dbeafe";
+                setTimeout(() => badge.style.background = "#eff6ff", 300);
+            }, 100);
+        }
+
         function initDragToDismiss(overlayId, sheetId) {
             const overlay = document.getElementById(overlayId);
             const sheet = document.getElementById(sheetId);
-            let startY = 0;
-            let currentY = 0;
+            let startY = 0, currentY = 0;
 
-            sheet.addEventListener('touchstart', (e) => {
-                if (sheet.scrollTop > 0) return;
-                startY = e.touches[0].clientY;
-                sheet.style.transition = 'none';
-            }, { passive: true });
-
-            sheet.addEventListener('touchmove', (e) => {
-                if (sheet.scrollTop > 0) return;
-                currentY = e.touches[0].clientY - startY;
-                if (currentY > 0) sheet.style.transform = `translateY(${currentY}px)`;
-            }, { passive: true });
-
-            sheet.addEventListener('touchend', () => {
-                sheet.style.transition = 'transform 0.3s cubic-bezier(0.16, 1, 0.3, 1)';
-                if (currentY > 150) closeModal(overlayId);
-                else sheet.style.transform = 'translateY(0)';
-                currentY = 0;
-            });
+            sheet.addEventListener('touchstart', (e) => { if (sheet.scrollTop > 0) return; startY = e.touches[0].clientY; sheet.style.transition = 'none'; }, { passive: true });
+            sheet.addEventListener('touchmove', (e) => { if (sheet.scrollTop > 0) return; currentY = e.touches[0].clientY - startY; if (currentY > 0) sheet.style.transform = `translateY(${currentY}px)`; }, { passive: true });
+            sheet.addEventListener('touchend', () => { sheet.style.transition = 'transform 0.3s cubic-bezier(0.16, 1, 0.3, 1)'; if (currentY > 150) closeModal(overlayId); else sheet.style.transform = 'translateY(0)'; currentY = 0; });
         }
 
         function closeModal(overlayId) {
@@ -254,10 +270,7 @@
             const sheet = overlay.querySelector('.modal-sheet');
             overlay.classList.remove('modal-open');
             sheet.style.transform = 'translateY(100%)';
-            setTimeout(() => { 
-                overlay.style.display = 'none';
-                sheet.style.transform = ''; 
-            }, 300);
+            setTimeout(() => { overlay.style.display = 'none'; sheet.style.transform = ''; }, 300);
         }
 
         function openModal(id = null, isViewOnly = false) {
@@ -265,7 +278,6 @@
             const form = document.getElementById('prodForm');
             const submitBtn = document.getElementById('submitBtn');
             const title = document.getElementById('modalTitle');
-            
             overlay.style.display = 'flex';
             setTimeout(() => overlay.classList.add('modal-open'), 10);
             
@@ -380,8 +392,6 @@
             const rows = document.querySelectorAll(selector);
             rows.forEach(row => {
                 const id = row.getAttribute('data-id');
-                row.onmousedown = (e) => startPress(e, id);
-                row.onmouseup = () => endPress();
                 row.ontouchstart = (e) => startPress(e, id);
                 row.ontouchend = () => endPress();
                 row.onclick = () => { if (!isLongPress) openModal(parseInt(id), true); };
@@ -401,17 +411,8 @@
 
         function endPress() { clearTimeout(pressTimer); }
         function closeActionMenu() { document.getElementById('actionMenuOverlay').style.display = 'none'; }
-
-        function handleEditFromMenu() {
-            closeActionMenu();
-            openModal(selectedId);
-        }
-
-        function handleDeleteFromMenu() {
-            closeActionMenu();
-            document.getElementById('deleteDialog').style.display = 'flex';
-        }
-
+        function handleEditFromMenu() { closeActionMenu(); openModal(selectedId); }
+        function handleDeleteFromMenu() { closeActionMenu(); document.getElementById('deleteDialog').style.display = 'flex'; }
         function closeDeleteDialog() { document.getElementById('deleteDialog').style.display = 'none'; }
 
         document.getElementById('confirmDeleteBtn').onclick = () => {
@@ -440,7 +441,6 @@
             const fb = document.getElementById('fullTableBody');
             const ft = document.getElementById('fullTableFoot');
             let totalKrg = 0, totalTap = 0, totalSwp = 0;
-
             fb.innerHTML = localData.map(i => {
                 totalKrg += parseInt(i.jmlKarung || 0);
                 totalTap += parseFloat(i.jmlTap || 0);
@@ -450,19 +450,12 @@
                     <td>${i.labelDari}-${i.labelSampai}</td><td>${i.jmlKarung}</td><td>${i.jmlTap}</td><td>${i.jmlSweeping}</td><td>${i.jmlRobek}</td>
                 </tr>`;
             }).join('');
-
-            ft.innerHTML = `<tr style="background:#f1f5f9">
-                <td colspan="6" style="text-align:right; font-weight:800; padding-right:15px">TOTAL</td>
-                <td>${totalKrg}</td><td>${totalTap.toFixed(2)}</td><td>${totalSwp.toFixed(2)}</td><td>-</td>
-            </tr>`;
+            ft.innerHTML = `<tr style="background:#f1f5f9"><td colspan="6" style="text-align:right; font-weight:800; padding-right:15px">TOTAL</td><td>${totalKrg}</td><td>${totalTap.toFixed(2)}</td><td>${totalSwp.toFixed(2)}</td><td>-</td></tr>`;
         }
 
-        function autoFillShiftTime() {
-            const s = document.getElementById('globalShift').value;
-            const d = document.getElementById('displayJamKerja');
-            if(s=="1") d.innerText = "07:00 — 15:00";
-            else if(s=="2") d.innerText = "15:00 — 23:00";
-            else if(s=="3") d.innerText = "23:00 — 07:00";
+        function sendToGoogleSheet() {
+            showToast("Sinkronisasi dimulai...");
+            // Logika integrasi Google Sheet Anda di sini
         }
     </script>
 </body>
